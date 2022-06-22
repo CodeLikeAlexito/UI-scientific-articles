@@ -1,24 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+// import NavigationBar from './components/NavigationBar';
+// import Login from './components/User/Login';
+// import Register from './components/User/Register';
+// import { Row, Col, Container } from 'react-bootstrap';
+import { useContext } from 'react';
+import "./App.scss";
+import { HomePage } from './components/Home/HomePage';
+import AuthContext from './util/auth-context';
+// import './App.css';
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-function App() {
+
+// const API_URL = 'http://localhost:7001/book/';
+
+export const App = () => {
+
+  const authCtx = useContext(AuthContext);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <HomePage />
   );
 }
 

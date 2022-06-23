@@ -7,21 +7,20 @@ import {NavigationBar} from '../NavigationBar'
 
 const Articles = () => {
 
+  const URL = "http://localhost:4002/article/";
+
   const [articles, setArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  
-
-  useEffect(() => {
-    searchArticles("");
-  }, []);
 
   const searchArticles = async (title) => {
-    const response = await fetch(`http://localhost:4002/${title}`);
+    const response = await fetch(`${URL}${title}`);
     const data = await response.json();
-
-    console.log(data);
     setArticles(data);
   }
+
+  useEffect(() => {
+    searchArticles('');
+  }, []);
 
   return (
     <>

@@ -10,6 +10,7 @@ const AuthContext = React.createContext({
 });
 
 const calculateRemainingTime = (expirationTime) => {
+  console.log("Inside calculate remaining time");  
   const currentTime = new Date().getTime();
   const adjExpirationTime = new Date(expirationTime).getTime();
 
@@ -19,6 +20,7 @@ const calculateRemainingTime = (expirationTime) => {
 };
 
 const retrieveStoredToken = () => {
+    console.log("Inside retrieveStoredToken");
   const storedToken = localStorage.getItem('token');
   const storedExpirationDate = localStorage.getItem('expirationTime');
 
@@ -37,7 +39,10 @@ const retrieveStoredToken = () => {
 };
 
 export const AuthContextProvider = (props) => {
+    console.log("Inside AuthContextProvider begining");
   const tokenData = retrieveStoredToken();
+  console.log(tokenData);
+//   const tokenData = null;
   
   let initialToken;
   if (tokenData) {
@@ -46,35 +51,46 @@ export const AuthContextProvider = (props) => {
 
   const [token, setToken] = useState(initialToken);
 
-  const userIsLoggedIn = token !== null ? true : false;
-  console.log(userIsLoggedIn)
+  const userIsLoggedIn = (!token || token.length === 0 ) ? false : true;
+//   const userIsLoggedIn = !!token;
 
-  const logoutHandler = useCallback(() => {
+  const logoutHandler = () => {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('expirationTime');
-
-    if (logoutTimer) {
-      clearTimeout(logoutTimer);
-    }
-  }, []);
+  }
 
   const loginHandler = (token, expirationTime) => {
+    console.log("Inside loginHandler");
     setToken(token);
     localStorage.setItem('token', token);
     localStorage.setItem('expirationTime', expirationTime);
 
     const remainingTime = calculateRemainingTime(expirationTime);
     console.log("Remaining time: " + remainingTime);
-    logoutTimer = setTimeout(logoutHandler, remainingTime);
+    // logoutTimer = setTimeout(logoutHandler, remainingTime);
   };
 
+  console.log(userIsLoggedIn)
+
+//   const logoutHandler = useCallback(() => {
+//     console.log("Inside logoutHandler");
+//     setToken(null);
+//     localStorage.removeItem('token');
+//     localStorage.removeItem('expirationTime');
+
+//     if (logoutTimer) {
+//       clearTimeout(logoutTimer);
+//     }
+//   }, []);
+
   useEffect(() => {
+    console.log("Inside useEffect");
     if (tokenData) {
       console.log(tokenData.duration);
-      logoutTimer = setTimeout(logoutHandler, tokenData.duration);
+    //   logoutTimer = setTimeout(logoutHandler, tokenData.duration);
     }
-  }, [tokenData, logoutHandler]);
+  }, [tokenData/*, logoutHandler*/]);
 
   const contextValue = {
     token: token,

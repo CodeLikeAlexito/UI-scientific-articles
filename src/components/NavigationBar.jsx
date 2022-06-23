@@ -3,15 +3,16 @@ import React, {useContext} from 'react';
 import {Navbar, Nav} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import AuthContext from '../util/auth-context';
+import {useNavigate} from "react-router-dom"
 
 const NavigationBar = () => {
     const authCtx = useContext(AuthContext);
-
+    const navigate = useNavigate();
     const isLoggedIn = authCtx.isLoggedIn;
 
     const logoutHandler = () => {
         authCtx.logout();
-        //optional: redirect the user
+        navigate("/");
     };
 
     return (

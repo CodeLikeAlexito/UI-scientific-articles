@@ -36,26 +36,26 @@ const Login = () => {
       setIsLoading(true);
 
       if(response.ok) {
-        alert("Successfully logged in");
-        navigate("/");
+        // alert("Successfully logged in");
+        // navigate("/");
         return response.json();
       } else {
-        return response.json().then(data => {
-          let errorMessage = 'Logging failed!';
-          if(data && data.message){
-            errorMessage = data.message;
-          }
-          
-          throw new Error(errorMessage);
-        });
-      }
-
+          return response.json().then(data => {
+            let errorMessage = 'Logging failed!';
+            if(data && data.message){
+              errorMessage = data.message;
+            }
+            
+            throw new Error(errorMessage);
+          });
+        }
       }).then(data => {
-        console.log(data);
+        // console.log(data);
         const expirationTime = new Date(
           new Date().getTime() + +data.expirationTime
         );
         authCtx.login(data.token, expirationTime.toISOString());
+        navigate("/");
       })
       .catch(err =>{
         alert(err.message);

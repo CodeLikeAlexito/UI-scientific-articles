@@ -11,6 +11,7 @@ const Articles = () => {
 
   const [articles, setArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  
 
   const searchArticles = async (title) => {
     const response = await fetch(`${URL}${title}`);
@@ -45,7 +46,7 @@ const Articles = () => {
       {articles?.length > 0 ? (
             <div className="container">
               {articles.map((article) => (
-                  <ArticleCard article = {article} />
+                  <ArticleCard article = {article}/>
                 ))}
             </div>
           ) : (

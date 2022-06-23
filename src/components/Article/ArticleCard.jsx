@@ -1,6 +1,19 @@
 import React from 'react';
+import {useNavigate} from "react-router-dom";
+import {useState, useEffect} from 'react'
+
 
 const ArticleCard = ({ article }) => {
+
+    const navigate = useNavigate();
+    const  [id, setId] = useState();
+    
+
+    const redirectToArticleInfo = (e) => {
+        setId(article.articleId);
+        id && navigate(`/articles/${id}`);
+    }
+
     return (
         <div className="article" key={article.articleId}>
 
@@ -9,7 +22,8 @@ const ArticleCard = ({ article }) => {
             </div>
 
             <div>
-                <img src={article.coverPage !== "" ? `data:image/jpeg;base64,${article.coverPage}` : 'https://via.placeholder.com/400'}  alt={article.title}/>
+                <img src={article.coverPage !== "" ? `data:image/jpeg;base64,${article.coverPage}` : 'https://via.placeholder.com/400'}  
+                    alt={article.title} onClick={redirectToArticleInfo} />
             </div>
 
             <div>

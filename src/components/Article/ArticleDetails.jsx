@@ -6,7 +6,7 @@ import {useState, useEffect} from 'react';
 
 const ArticleDetails = () => {
 
-    const URL = "http://localhost:4002/article/id/";
+    const URL = "http://localhost:4002/v1/api/article/id/";
 
     const { id } = useParams();
     console.log(id);

@@ -4,13 +4,16 @@ import SearchIcon from './search.svg';
 import {useState, useEffect} from 'react'
 import "./Article.css"
 import {NavigationBar} from '../NavigationBar'
+import { Button } from 'react-bootstrap';
+import {useNavigate} from "react-router-dom";
 
 const Articles = () => {
 
-  const URL = "http://localhost:4002/article/";
+  const URL = "http://localhost:4002/v1/api/article/";
 
   const [articles, setArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
   
 
   const searchArticles = async (title) => {
@@ -23,11 +26,21 @@ const Articles = () => {
     searchArticles('');
   }, []);
 
+  const handleNewArticleClick = () => {
+    navigate("/new-article")
+  }
+
   return (
     <>
     <div><NavigationBar /></div>
     <div className="app">
       <h1>Scientific Articles</h1>
+      <Button 
+        variant="primary"
+        onClick={handleNewArticleClick}  
+      >
+        New article
+      </Button>{' '}
 
       <div className="search">
         <input

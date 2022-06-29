@@ -50,11 +50,11 @@ const Login = () => {
           });
         }
       }).then(data => {
-        // console.log(data);
+        console.log(data);
         const expirationTime = new Date(
           new Date().getTime() + +data.expirationTime
         );
-        authCtx.login(data.token, expirationTime.toISOString());
+        authCtx.login(data.token, expirationTime.toISOString(), data.username);
         navigate("/");
       })
       .catch(err =>{

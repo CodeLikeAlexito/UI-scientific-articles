@@ -4,30 +4,47 @@ import SearchIcon from './search.svg';
 import {useState, useEffect} from 'react'
 import "./Article.css"
 import {NavigationBar} from '../NavigationBar'
-import { Button } from 'react-bootstrap';
-import {useNavigate} from "react-router-dom";
 
 const Articles = () => {
 
-  const URL = "http://localhost:4002/v1/api/article/";
+  //TODO check URLS everywhere
 
+  const defaultSelectedDropdownListValue = 'title';
+
+  const [selectedValue, setSelectedValue] = useState(defaultSelectedDropdownListValue);
   const [articles, setArticles] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
-  
+  const [searchTerm, setSearchTerm] = useState('', selectedValue); //TODO Fix searching to be by keywords/title/fieldOfScience
 
-  const searchArticles = async (title) => {
-    const response = await fetch(`${URL}${title}`);
+  const searchArticles = async (searchString, searchCriteria) => {
+
+    let URL;
+
+    console.log("Search criteria: " + searchCriteria);
+
+    if(searchCriteria === 'title')
+      URL = "http://localhost:4002/v1/api/article/";
+
+    if(searchCriteria === 'keyword')
+      URL = "http://localhost:4002/v1/api/article/search-keyword";
+
+    if(searchCriteria === 'fieldOfScience')
+      URL = "http://localhost:4002/v1/api/article/search-field-science";
+
+    console.log(URL);
+
+    const response = await fetch(`${URL}${searchString}`);
     const data = await response.json();
     setArticles(data);
+    console.log(data);  
   }
 
   useEffect(() => {
-    searchArticles('');
+    searchArticles('', defaultSelectedDropdownListValue);
   }, []);
 
-  const handleNewArticleClick = () => {
-    navigate("/new-article")
+  const handleSelectDropdownChange = (event) => {
+    console.log(event.target.value);
+    setSelectedValue(event.target.value);
   }
 
   return (
@@ -35,14 +52,18 @@ const Articles = () => {
     <div><NavigationBar /></div>
     <div className="app">
       <h1>Scientific Articles</h1>
-      <Button 
-        variant="primary"
-        onClick={handleNewArticleClick}  
-      >
-        New article
-      </Button>{' '}
+      <div>
+        <p>Please select search criteria. The default search criteria is by <b>Title</b></p>
+      </div>
+
+      <select className="form-select" aria-label="Default select example" value={selectedValue} onChange={handleSelectDropdownChange}>
+        <option value="title">Search by title</option>
+        <option value="keyword">Search by keyword</option>
+        <option value="fieldOfScience">Search by field of sceince</option>
+      </select>
 
       <div className="search">
+        {/* Todo - add button selection by what criteria to search - title / keywords / fieldOfScience. After that expect for searchTerm passed selected criteria as param in searchArticles */}
         <input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -51,7 +72,7 @@ const Articles = () => {
         <img
           src={SearchIcon}
           alt="search"
-          onClick={() => searchArticles(searchTerm)}
+          onClick={() => searchArticles(searchTerm, selectedValue)}
         />
       </div>
       
@@ -59,7 +80,7 @@ const Articles = () => {
       {articles?.length > 0 ? (
             <div className="container">
               {articles.map((article) => (
-                  <ArticleCard article = {article}/>
+                  <ArticleCard article = {article} key = {article.articleId}/>
                 ))}
             </div>
           ) : (

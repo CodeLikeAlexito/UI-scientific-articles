@@ -1,6 +1,6 @@
 import React from "react";
 import loginImg from "../../login.svg";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import {NavigationBar} from '../../components/NavigationBar';
 
@@ -42,10 +42,6 @@ const Register = () => {
     })
     .then((response) => {
       setIsLoading(false);
-      // if(response.status === 200) 
-      //   return Promise.all([response.json(), response.headers]);
-      // else
-      //   return Promise.reject("Invalid registration attempt");
 
       if(response.ok) {
         // ...
@@ -70,13 +66,6 @@ const Register = () => {
       .catch(err =>{
         alert(err.message);
       });
-    // .then(([body, headers]) => {
-    //     console.log("Successfully registrated");
-    //     navigate("/");
-    // }).catch((message) => {
-    //   alert(message);
-    // });
-
   }
 
   return (

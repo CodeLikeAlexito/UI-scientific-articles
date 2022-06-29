@@ -4,6 +4,7 @@ let logoutTimer;
 
 const AuthContext = React.createContext({
   token: '',
+  username: '',
   isLoggedIn: false,
   login: (token) => {},
   logout: () => {},
@@ -20,9 +21,10 @@ const calculateRemainingTime = (expirationTime) => {
 };
 
 const retrieveStoredToken = () => {
-    console.log("Inside retrieveStoredToken");
+  console.log("Inside retrieveStoredToken");
   const storedToken = localStorage.getItem('token');
   const storedExpirationDate = localStorage.getItem('expirationTime');
+  const storedUsername = localStorage.getItem('username');
 
   const remainingTime = calculateRemainingTime(storedExpirationDate);
 
@@ -35,21 +37,25 @@ const retrieveStoredToken = () => {
   return {
     token: storedToken,
     duration: remainingTime,
+    username: storedUsername,
   };
 };
 
 export const AuthContextProvider = (props) => {
-    console.log("Inside AuthContextProvider begining");
+  console.log("Inside AuthContextProvider begining");
   const tokenData = retrieveStoredToken();
   console.log(tokenData);
 //   const tokenData = null;
   
   let initialToken;
+  let initialUsername;
   if (tokenData) {
     initialToken = tokenData.token;
+    initialUsername = tokenData.username;
   }
 
   const [token, setToken] = useState(initialToken);
+  const [username, setUsername] = useState(initialUsername);
 
   const userIsLoggedIn = (!token || token.length === 0 ) ? false : true;
 //   const userIsLoggedIn = !!token;
@@ -58,13 +64,15 @@ export const AuthContextProvider = (props) => {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('expirationTime');
+    localStorage.removeItem('username');
   }
 
-  const loginHandler = (token, expirationTime) => {
+  const loginHandler = (token, expirationTime, username) => {
     console.log("Inside loginHandler");
     setToken(token);
     localStorage.setItem('token', token);
     localStorage.setItem('expirationTime', expirationTime);
+    localStorage.setItem('username', username);
 
     const remainingTime = calculateRemainingTime(expirationTime);
     console.log("Remaining time: " + remainingTime);
@@ -94,6 +102,7 @@ export const AuthContextProvider = (props) => {
 
   const contextValue = {
     token: token,
+    username: username,
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,

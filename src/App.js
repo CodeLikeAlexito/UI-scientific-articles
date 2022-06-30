@@ -1,3 +1,21 @@
+// import React from 'react';
+// import {Admin,ListGuesser, Resource} from 'react-admin';
+// import restProvider from 'ra-data-simple-rest';
+
+
+// const parentURL = restProvider(`http://localhost:4001/`);
+
+// function App() {
+//     return(
+//        <Admin dataProvider={parentURL}>
+//           <Resource name="client"/>
+//           {/* <Resource name="list" list={ListGuesser} /> */}
+//        </Admin>
+//     );
+// }
+// export default App;
+
+
 import { useContext } from 'react';
 import "./App.scss";
 import { HomePage } from './components/Home/HomePage';

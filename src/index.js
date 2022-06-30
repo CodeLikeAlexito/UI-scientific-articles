@@ -11,6 +11,7 @@ import { ArticleDetails } from './components/Article/ArticleDetails';
 import { AuthContextProvider } from './util/auth-context';
 import { NewArticle } from './components/Article/NewArticle';
 import { AdminPage } from './components/Admin/AdminPage';
+import { EditScientist } from './components/Admin/EditScientist';
 // import { CreateArticle } from './components/Article/CreateArticle';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
@@ -31,8 +32,9 @@ root.render(
       <Route path='/login' element={<Login />}/>
       <Route path='/articles' element={<Articles />}/>
       <Route path='/articles/:id' element={<ArticleDetails />}/>
+      <Route path='/scientist/:id' element={<EditScientist />}/>
       <Route path='/new-article' element={<NewArticle />}/>
-      <Route path='/admin/*' element={<AdminPage />}/>
+      <Route path='/admin' element={<AdminPage />}/>
       {/* <Route path='/client/' element={<ScientistsList />}/> */}
     </Routes>
   </Router>

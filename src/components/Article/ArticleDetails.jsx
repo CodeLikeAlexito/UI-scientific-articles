@@ -83,6 +83,8 @@ const ArticleDetails = () => {
                 <div className='row'>
                     <div className='col'>
                         <h5 className='fw-bolder'>KEYWORDS</h5>
+                        {/* <p>{article.keywords.map(keyword => <p>{keyword}</p>)}</p> */}
+                        
                     </div>
                 </div>
                 <br></br>

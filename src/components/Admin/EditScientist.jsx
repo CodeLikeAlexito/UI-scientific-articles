@@ -9,8 +9,8 @@ import {
 
 const EditScientist = () => {
 
-    const getScientistURL = 'http://localhost:4001/client/id/';
-    const editScientistURL = 'http://localhost:4001/client/';
+    const getScientistURL = 'http://localhost:4001/scientist/id/';
+    const editScientistURL = 'http://localhost:4001/scientist/';
     const navigate = useNavigate();
     const { id } = useParams();
     const [scientist, setScientist] = useState('');
@@ -53,10 +53,11 @@ const EditScientist = () => {
         const newState = roles.map(obj => {
             if(obj.name !== event.target.value) {
                 return {...obj, name: event.target.value};
-            }
-            console.log(obj);    
+            }  
             return obj;
         })
+
+        console.log(newState);
 
         setRoles(newState);
     }

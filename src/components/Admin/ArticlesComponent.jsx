@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import {useNavigate} from "react-router-dom";
 
 const ArticlesComponent = () => {
 
     const URL = 'http://localhost:4002/v1/api/article/';
     const [articles, setArticles] = useState([]);
+    const navigate = useNavigate();
 
     const handleArticles = async () => {
         const response = await fetch(`${URL}`);
@@ -15,6 +17,22 @@ const ArticlesComponent = () => {
     useEffect(() => {
         handleArticles([]);
     }, [])
+
+    const redirectEdit = (id) => {
+        navigate(`/admin/article/${id}`);
+    }
+
+    const handleDelete = async (id) => {
+        const response = await fetch(`${URL}${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        const data = await response.json();
+        handleArticles();
+    }
+
     // console.log(articles);
     const DisplayData = articles.map(
         (article) => {
@@ -31,6 +49,9 @@ const ArticlesComponent = () => {
                     <td>{article.academicJournal}</td>
                     <td>{article.fieldOfScience}</td>
                     <td>{article.creator}</td>
+                    <td>{article.status}</td>
+                    <td scope="col"><button onClick={()=> handleDelete(article.articleId)}>Delete</button></td>
+                    <td scope="col"><button onClick={() => redirectEdit(article.articleId)}>Edit</button></td>
                 </tr>
             )
         }
@@ -54,6 +75,7 @@ const ArticlesComponent = () => {
                     <th scope="col">Academic journal</th>
                     <th scope="col">Field of science</th>
                     <th scope="col">Creator</th>
+                    <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>

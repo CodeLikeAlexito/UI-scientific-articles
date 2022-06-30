@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 const ScientistsComponent = () => {
 
-    const URL = 'http://localhost:4001/client/';
+    const URL = 'http://localhost:4001/scientist/';
     const [scientists, setScientists] = useState([]);
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const ScientistsComponent = () => {
     }
 
     const redirectEdit = (id) => {
-        navigate(`/scientist/${id}`);
+        navigate(`/admin/scientist/${id}`);
     }
 
     const handleDelete = async (id) => {

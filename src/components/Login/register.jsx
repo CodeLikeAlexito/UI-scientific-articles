@@ -6,6 +6,8 @@ import {NavigationBar} from '../../components/NavigationBar';
 
 const Register = () => {
 
+  const URL = 'http://localhost:4001/scientist/';
+
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
@@ -19,8 +21,7 @@ const Register = () => {
 
   const[isLoading, setIsLoading] = useState(false);
 
-  const sendRegistrationRequest = () => {
-
+  const handleRegistration = async () => {
     const ClientRegistrationDto = {
       firstName: firstName,
       lastName: lastName,
@@ -32,41 +33,80 @@ const Register = () => {
       username: username
     };
 
-    setIsLoading(true);
-    fetch("http://localhost:4001/client/register", {
-        headers: {
-            "Content-Type": "application/json",
-        },
-        method: "post",
-        body: JSON.stringify(ClientRegistrationDto),
-    })
-    .then((response) => {
-      setIsLoading(false);
+    const response = await fetch(`${URL}`, {
+      headers: {
+          "Content-Type": "application/json",
+      },
+      method: "post",
+      body: JSON.stringify(ClientRegistrationDto),
+    });
 
-      if(response.ok) {
-        // ...
-        // console.log("Successfully registrated");
-        alert("Successfully registrated");
-        navigate("/");
-        return response.json();
-      } else {
-        return response.json().then(data => {
-          // show an error modal
-          let errorMessage = 'Registration failed!';
-          if(data && data.message){
-            errorMessage = data.message;
-          }
-          
-          throw new Error(errorMessage);
-        });
-      }
-      }).then(data => {
-        console.log(data);
-      })
-      .catch(err =>{
-        alert(err.message);
-      });
+    const data = await response.json();
+    setIsLoading(true); //maybe should be moved some rows upper
+
+    if(response.ok) {
+      alert("Successfully registrated");
+      navigate("/");
+      return data;
+    }
+
+    let errorMessage = 'Registration failed!';
+    if(data && data.message){
+      errorMessage = data.message;
+    }
+
+    alert(errorMessage);
+    setIsLoading(false); //check this also
   }
+
+  // const sendRegistrationRequest = () => {
+
+  //   const ClientRegistrationDto = {
+  //     firstName: firstName,
+  //     lastName: lastName,
+  //     email: email,
+  //     password: password,
+  //     city: city,
+  //     address: address,
+  //     phone: phone,
+  //     username: username
+  //   };
+
+  //   setIsLoading(true);
+  //   fetch("http://localhost:4001/client/register", {
+  //       headers: {
+  //           "Content-Type": "application/json",
+  //       },
+  //       method: "post",
+  //       body: JSON.stringify(ClientRegistrationDto),
+  //   })
+  //   .then((response) => {
+  //     setIsLoading(false);
+
+  //     if(response.ok) {
+  //       // ...
+  //       // console.log("Successfully registrated");
+  //       alert("Successfully registrated");
+  //       navigate("/");
+  //       return response.json();
+  //     } else {
+  //       return response.json().then(data => {
+  //         // show an error modal
+  //         let errorMessage = 'Registration failed!';
+  //         if(data && data.message){
+  //           errorMessage = data.message;
+  //         }
+          
+  //         throw new Error(errorMessage);
+  //       });
+  //     }
+  //     }).then(data => {
+  //       console.log(data);
+  //     })
+  //     .catch(err =>{
+  //       alert(err.message);
+  //     });
+  // }
 
   return (
     <>
@@ -115,7 +155,7 @@ const Register = () => {
           </div>
         </div>
         <div className="footer">
-          {!isLoading && <button type="button" className="btn" onClick={() => sendRegistrationRequest()}>
+          {!isLoading && <button type="button" className="btn" onClick={handleRegistration}>
             Register
           </button> }
           {isLoading && <p>Sending request ....</p>}

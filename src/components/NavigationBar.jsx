@@ -10,6 +10,9 @@ const NavigationBar = () => {
     const navigate = useNavigate();
     const isLoggedIn = authCtx.isLoggedIn;
 
+    // console.log("Inside navbar");
+    console.log(authCtx);
+
     const logoutHandler = () => {
         authCtx.logout();
         navigate("/");

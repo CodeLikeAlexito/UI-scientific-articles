@@ -11,7 +11,7 @@ const AuthContext = React.createContext({
 });
 
 const calculateRemainingTime = (expirationTime) => {
-  console.log("Inside calculate remaining time");  
+  // console.log("Inside calculate remaining time");  
   const currentTime = new Date().getTime();
   const adjExpirationTime = new Date(expirationTime).getTime();
 
@@ -21,7 +21,7 @@ const calculateRemainingTime = (expirationTime) => {
 };
 
 const retrieveStoredToken = () => {
-  console.log("Inside retrieveStoredToken");
+  // console.log("Inside retrieveStoredToken");
   const storedToken = localStorage.getItem('token');
   const storedExpirationDate = localStorage.getItem('expirationTime');
   const storedUsername = localStorage.getItem('username');
@@ -42,7 +42,7 @@ const retrieveStoredToken = () => {
 };
 
 export const AuthContextProvider = (props) => {
-  console.log("Inside AuthContextProvider begining");
+  // console.log("Inside AuthContextProvider begining");
   const tokenData = retrieveStoredToken();
   console.log(tokenData);
 //   const tokenData = null;

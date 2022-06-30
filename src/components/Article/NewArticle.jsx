@@ -53,6 +53,8 @@ const NewArticle = () => {
   const [title, setTitle] = useState("");
   const [yearPublished, setYearPublished] = useState("");
   const [authors, setAuthors] = useState([]);
+  const [keywords, setKeywords] = useState([]);
+  const [status, setStatus] = useState('');
 //   const [coverPageImage, setCoverPageImage] = useState("");
 //   const [articlePdf, setArticlePdf] = useState("");
   const [abstractDescription, setAbstractDescription] = useState("");
@@ -107,11 +109,11 @@ const NewArticle = () => {
     }
   }
 
-  const handleAuthors = (e) => {
-      const authorsString = e.target.value;
-      const authorsStringArr = authorsString.trim().split(",");
-      setAuthors(authorsStringArr);
-  }
+  // const handleAuthors = (e) => {
+  //     const authorsString = e.target.value;
+  //     const authorsStringArr = authorsString.trim().split(",");
+  //     setAuthors(authorsStringArr);
+  // }
 
   // I will need to change it to be api gateway
   const API = 'http://localhost:4002/v1/api/article/';  
@@ -123,11 +125,13 @@ const NewArticle = () => {
       title: title,
       yearPublished: yearPublished,
       authors: authors,
+      keywords: keywords,
       coverPageImage: imageFile,
       articlePdf: pdfFile,
       abstractDescription: abstractDescription,
       academicJournal: academicJournal,
       fieldOfScience: fieldOfScience,
+      status: status,
       creator: creator
     };
 
@@ -210,17 +214,34 @@ const NewArticle = () => {
         <br></br>
         <div className='form-group'>
             <label>Authors</label>
+            <p className='text-danger'>Please enter authors separated by ,</p>
             <input
                 {...register('authors')} 
                 type="text"
                 name="authors"
                 value={authors}
-                onChange={handleAuthors}
+                onChange={(e) => setAuthors(e.target.value)}
                 className="form-control"
             />
             {errors.authors && (
               <p className="text-sm text-danger">{errors.authors.message}</p>
             )}
+        </div>
+        <br></br>
+        <div className='form-group'>
+            <label>Keywords</label>
+            <p className='text-danger'>Please enter authors separated by ,</p>
+            <input
+                // {...register('authors')} 
+                type="text"
+                name="keywords"
+                value={keywords}
+                onChange={(e) => setKeywords(e.target.value)}
+                className="form-control"
+            />
+            {/* {errors.authors && (
+              <p className="text-sm text-danger">{errors.authors.message}</p>
+            )} */}
         </div>
         <br></br>
         <div className='form-group'>

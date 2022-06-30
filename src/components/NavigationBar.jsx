@@ -11,7 +11,7 @@ const NavigationBar = () => {
     const isLoggedIn = authCtx.isLoggedIn;
 
     // console.log("Inside navbar");
-    console.log(authCtx);
+    // console.log(authCtx);
 
     const logoutHandler = () => {
         authCtx.logout();
@@ -25,6 +25,7 @@ const NavigationBar = () => {
                     {/* <Link to="/" className='nav-link'>Scientific Articles</Link> */}
                     <Link to="/" className='nav-link'>Home</Link>
                     {/* <Link to="#features" className='nav-link'>Features</Link> */}
+                    {isLoggedIn && <Link to="/mine-articles" className='nav-link'>My Articles</Link>}
                     {isLoggedIn && <Link to="/new-article" className='nav-link'>New article</Link>}
                     {isLoggedIn && <Link to="/articles" className='nav-link'>Articles</Link>}
                     {isLoggedIn && <Link to="/admin" className='nav-link'>Admin</Link>}

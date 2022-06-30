@@ -18,19 +18,37 @@ const Articles = () => {
   const searchArticles = async (searchString, searchCriteria) => {
 
     let URL;
+    console.log('Search string: '+ searchString);
 
     console.log("Search criteria: " + searchCriteria);
-
+    
     if(searchCriteria === 'title')
       URL = "http://localhost:4002/v1/api/article/";
 
-    if(searchCriteria === 'keyword')
-      URL = "http://localhost:4002/v1/api/article/search-keyword";
+    if(searchCriteria === 'keyword'){
 
-    if(searchCriteria === 'fieldOfScience')
-      URL = "http://localhost:4002/v1/api/article/search-field-science";
+      if(typeof searchString === 'string' && searchString.trim().length === 0) {
+        console.log('Here');
+        URL = "http://localhost:4002/v1/api/article/";
+      } else {
+        URL = "http://localhost:4002/v1/api/article/keyword-search/";
+      }
+    }
+      
 
-    console.log(URL);
+    if(searchCriteria === 'fieldOfScience') {
+
+      if(typeof searchString === 'string' && searchString.trim().length === 0) {
+        console.log('Here');
+        URL = "http://localhost:4002/v1/api/article/";
+      } else {
+        URL = "http://localhost:4002/v1/api/article/science/";
+      }
+
+    }
+      
+
+    console.log(`${URL}${searchString}`);
 
     const response = await fetch(`${URL}${searchString}`);
     const data = await response.json();

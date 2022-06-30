@@ -74,7 +74,7 @@ const NewArticle = () => {
         reader.onloadend=(e)=>{
           setPdfError('');
           setPdfFile(e.target.result);
-          console.log(e.target);
+          // console.log(e.target);
         }
       }
       else{
@@ -98,7 +98,7 @@ const NewArticle = () => {
         image.onloadend=(e)=>{
             setImageError('');
             setImageFile(e.target.result);
-            console.log(e.target);
+            // console.log(e.target);
         }   
       } else {
         setImageError('Not a valid jpg, png or jpeg: Please select only JPG, PNG or JPEG');
@@ -135,6 +135,7 @@ const NewArticle = () => {
       creator: creator
     };
 
+    console.log(ArticleRequestDto);
     const response = await fetch(API, {
       method: "post",
       headers: {
@@ -143,20 +144,20 @@ const NewArticle = () => {
       body: JSON.stringify(ArticleRequestDto)
     });
     const { article } = await response.json();
-    console.log(response.json());
+    console.log(article);
     return article;      
   }
 
   //TODO refactor the returns
   const { mutate, isLoading } = useMutation(createArticle, {
     onSuccess: data => {
-      console.log(data);
+      // console.log(data);
       const message = "success";
       alert(message);
       // navigate("/articles");
     },
     onError: (data) => {
-      console.log(data);
+      // console.log(data);
       alert("There was an error");
       
     },

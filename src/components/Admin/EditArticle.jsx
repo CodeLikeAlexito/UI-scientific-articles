@@ -131,7 +131,7 @@ const EditArticle = () => {
             image.onloadend=(e)=>{
                 setCoverPageError('');
                 setCoverPage(e.target.result);
-                console.log(e.target);
+                // console.log(e.target);
             }   
         } else {
             setCoverPageError('Not a valid jpg, png or jpeg: Please select only JPG, PNG or JPEG');
@@ -153,7 +153,7 @@ const EditArticle = () => {
         reader.onloadend=(e)=>{
           setPdfError('');
           setArticlePdf(e.target.result);
-          console.log(e.target);
+        //   console.log(e.target);
         }
       }
       else{

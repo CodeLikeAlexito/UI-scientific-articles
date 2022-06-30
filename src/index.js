@@ -13,6 +13,7 @@ import { NewArticle } from './components/Article/NewArticle';
 import { AdminPage } from './components/Admin/AdminPage';
 import { EditScientist } from './components/Admin/EditScientist';
 import { EditArticle } from './components/Admin/EditArticle';
+import { MineArticles } from './components/Article/MineArticles';
 // import { CreateArticle } from './components/Article/CreateArticle';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
@@ -37,6 +38,7 @@ root.render(
       <Route path='/admin/article/:id' element={<EditArticle />}/>
       <Route path='/new-article' element={<NewArticle />}/>
       <Route path='/admin' element={<AdminPage />}/>
+      <Route path='/mine-articles' element={<MineArticles />}/>
       {/* <Route path='/client/' element={<ScientistsList />}/> */}
     </Routes>
   </Router>

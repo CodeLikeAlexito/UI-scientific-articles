@@ -7,7 +7,6 @@ import AuthContext from "../../util/auth-context";
 const MineArticles = () => {
 
     const authCtx = useContext(AuthContext);
-    console.log(authCtx);
 
     const [articles, setArticles] = useState([]);
     const URL = `http://localhost:4002/v1/api/article/username/${authCtx.username}`;
@@ -25,7 +24,7 @@ const MineArticles = () => {
     return (
         <>
         <div><NavigationBar /></div>
-        <div>Mine Articles</div>
+        <br></br>
         {articles?.length > 0 ? (
             <div className="container">
               {articles.map((article) => (

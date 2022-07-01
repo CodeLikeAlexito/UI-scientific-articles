@@ -10,12 +10,15 @@ const AdminPage = () => {
         <>
         <NavigationBar />
         <br></br>
-        <div className='text-center'>
+        <div className='container'>
             <h1>
                 Admin panel
             </h1>
         </div>
+        <br></br>
         <ScientistsComponent />
+        <br></br>
+        <br></br>
         <ArticlesComponent />
         </>
     );

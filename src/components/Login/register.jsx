@@ -1,6 +1,6 @@
 import React from "react";
 import loginImg from "../../login.svg";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import {NavigationBar} from '../../components/NavigationBar';
 
@@ -8,20 +8,34 @@ const Register = () => {
 
   const URL = 'http://localhost:4001/scientist/';
 
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setEmail] = useState("")
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-
   const navigate = useNavigate();
+  
+  const initialValues = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    city: "",
+    address: "",
+    phone: "",
+    username: ""
+  };
 
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
   const[isLoading, setIsLoading] = useState(false);
+  const[isSubmit, setIsSubmit] = useState(false);
 
-  const handleRegistration = async () => {
+  const sendRequest = async () => {
+
     const ClientRegistrationDto = {
       firstName: firstName,
       lastName: lastName,
@@ -57,61 +71,83 @@ const Register = () => {
 
     alert(errorMessage);
     setIsLoading(false); //check this also
+
   }
 
-  // const sendRegistrationRequest = () => {
+  const handleRegistration = (e) => {
+    e.preventDefault();
+    setFormErrors(validate(formValues));
+    setIsSubmit(true);
+  }
 
-  //   const ClientRegistrationDto = {
-  //     firstName: firstName,
-  //     lastName: lastName,
-  //     email: email,
-  //     password: password,
-  //     city: city,
-  //     address: address,
-  //     phone: phone,
-  //     username: username
-  //   };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({...formValues, [name]: value});
+  }
 
-  //   setIsLoading(true);
-  //   fetch("http://localhost:4001/client/register", {
-  //       headers: {
-  //           "Content-Type": "application/json",
-  //       },
-  //       method: "post",
-  //       body: JSON.stringify(ClientRegistrationDto),
-  //   })
-  //   .then((response) => {
-  //     setIsLoading(false);
+  useEffect(() => {
+    console.log(formErrors);
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
+      console.log(formValues);
+      sendRequest();
+    }
+  }, [formErrors]);
 
-  //     if(response.ok) {
-  //       // ...
-  //       // console.log("Successfully registrated");
-  //       alert("Successfully registrated");
-  //       navigate("/");
-  //       return response.json();
-  //     } else {
-  //       return response.json().then(data => {
-  //         // show an error modal
-  //         let errorMessage = 'Registration failed!';
-  //         if(data && data.message){
-  //           errorMessage = data.message;
-  //         }
-          
-  //         throw new Error(errorMessage);
-  //       });
-  //     }
-  //     }).then(data => {
-  //       console.log(data);
-  //     })
-  //     .catch(err =>{
-  //       alert(err.message);
-  //     });
-  // }
+  const validate = (values) => {
+    const errors = {};
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    if (!values.firstName) {
+      errors.firstName = "First name is required!";
+    }
+
+    if (!values.lastName) {
+      errors.lastName = "Last name is required!";
+    }
+
+    if (!values.email) {
+      errors.email = "Email is required!";
+    } else if (!regex.test(values.email)) {
+      errors.email = "This is not a valid email format!";
+    }
+
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 4) {
+      errors.password = "Password must be more than 4 characters";
+    } else if (values.password.length > 10) {
+      errors.password = "Password cannot exceed more than 10 characters";
+    }
+
+    if (!values.city) {
+      errors.city = "City is required!";
+    }
+
+    if (!values.address) {
+      errors.address = "Address is required!";
+    }
+
+    if (!values.phone) {
+      errors.phone = "Phone is required!";
+    }
+
+    if (!values.username) {
+      errors.username = "Username is required!";
+    }
+
+    return errors;
+  }
 
   return (
     <>
     <div><NavigationBar /></div>
     <br></br>
+    {Object.keys(formErrors).length === 0 && isSubmit ? (
+        <div className="ui message success">Signed in successfully</div>
+      ) : (
+        <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
+      )}
+    <form>
     <div className="base-container">
         <div className="header">Register</div>
         <br></br>
@@ -122,35 +158,43 @@ const Register = () => {
           <div className="form">
             <div className="form-group">
               <label htmlFor="username">First name</label>
-              <input type="text" name="firstName" placeholder="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
+              <input type="text" name="firstName" placeholder="firstName" value={formValues.firstName} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.firstName}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Last name</label>
-              <input type="text" name="lastName" placeholder="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)}/>
+              <input type="text" name="lastName" placeholder="lastName" value={formValues.lastName} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.lastName}</p>
             </div>
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input type="text" name="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+              <input type="text" name="email" placeholder="email" value={formValues.email} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.email}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Username</label>
-              <input type="text" name="username" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+              <input type="text" name="username" placeholder="username" value={formValues.username} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.username}</p>
             </div>
             <div className="form-group">
               <label htmlFor="password">Password</label>
-              <input type="password" name="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+              <input type="password" name="password" placeholder="password" value={formValues.password} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.password}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">City</label>
-              <input type="text" name="city" placeholder="city" value={city} onChange={(e) => setCity(e.target.value)}/>
+              <input type="text" name="city" placeholder="city" value={formValues.city} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.city}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Address</label>
-              <input type="text" name="address" placeholder="address" value={address} onChange={(e) => setAddress(e.target.value)}/>
+              <input type="text" name="address" placeholder="address" value={formValues.address} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.address}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Phone</label>
-              <input type="text" name="phone" placeholder="phone" value={phone} onChange={(e) => setPhone(e.target.value)}/>
+              <input type="text" name="phone" placeholder="phone" value={formValues.phone} onChange={handleChange}/>
+              <p className="text-sm text-danger">{formErrors.phone}</p>
             </div>
           </div>
         </div>
@@ -161,6 +205,7 @@ const Register = () => {
           {isLoading && <p>Sending request ....</p>}
         </div>
       </div>
+      </form>
       <br></br>
       </>
   );

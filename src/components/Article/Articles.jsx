@@ -39,7 +39,7 @@ const Articles = () => {
     if(searchCriteria === 'fieldOfScience') {
 
       if(typeof searchString === 'string' && searchString.trim().length === 0) {
-        console.log('Here');
+        // console.log('Here');
         URL = "http://localhost:4002/v1/api/article/";
       } else {
         URL = "http://localhost:4002/v1/api/article/science/";

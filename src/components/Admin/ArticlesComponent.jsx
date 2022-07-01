@@ -11,7 +11,7 @@ const ArticlesComponent = () => {
         const response = await fetch(`${URL}`);
         const data = await response.json();
         setArticles(data);
-        console.log(data);
+        // console.log(data);
     }
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const ArticlesComponent = () => {
         (article) => {
             return (
                 <tr key={article.articleId}>
-                    <td>{article.articleId}</td>
+                    {/* <td>{article.articleId}</td> */}
                     <td>{article.title}</td>
                     <td>{article.yearPublished}</td>
                     <td>{article.authors}</td>
@@ -50,21 +50,22 @@ const ArticlesComponent = () => {
                     <td>{article.fieldOfScience}</td>
                     <td>{article.creator}</td>
                     <td>{article.status}</td>
-                    <td scope="col"><button onClick={()=> handleDelete(article.articleId)}>Delete</button></td>
-                    <td scope="col"><button onClick={() => redirectEdit(article.articleId)}>Edit</button></td>
+                    <td scope="col"><button className='btn btn-danger' onClick={()=> handleDelete(article.articleId)}>Delete</button></td>
+                    <td scope="col"><button className='btn btn-warning' onClick={() => redirectEdit(article.articleId)}>Edit</button></td>
                 </tr>
             )
         }
     )
 
     return(
-        <div className='container border'>
+        <div className='container-xxl border'>
+            <br></br>
             <h1>Articles</h1>
             <br></br>
             <table className="table">
                 <thead>
                     <tr>
-                    <th scope="col">Id</th>
+                    {/* <th scope="col">Id</th> */}
                     <th scope="col">Title</th>
                     <th scope="col">Published</th>
                     <th scope="col">Authors</th>

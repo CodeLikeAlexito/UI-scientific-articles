@@ -35,12 +35,12 @@ const EditArticle = () => {
     //articleID
 
     const getArticleById = async (id) => {
-        console.log(`${getURL}${id}`);
+        // console.log(`${getURL}${id}`);
         const response = await fetch(`${getURL}${id}`);
         const data = await response.json();
         setArticle(data);
-        console.log("DAta:")
-        console.log(data);
+        // console.log("DAta:")
+        // console.log(data);
         setCurrentArticle(data);
     }
 
@@ -102,7 +102,7 @@ const EditArticle = () => {
 
         // const updatedArticle = { abstractDescription, academicJournal, authors, creator, fieldOfScience, keywords, status, title,  yearPublished, articlePdf, coverPage};
         console.log(ArticleRequestDto);
-        console.log(`${editURL}`);
+        // console.log(`${editURL}`);
         const response = await fetch(`${editURL}${id}`, {
             method: "PUT",
             headers: {

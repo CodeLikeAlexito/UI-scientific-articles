@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { NavigationBar } from '../NavigationBar';
 import {useNavigate} from "react-router-dom";
+import Modal from 'react-modal';
+
 import {
     MDBJumbotron,
     MDBCardText
@@ -23,12 +25,12 @@ const EditScientist = () => {
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [roles, setRoles] = useState([]);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const getScientistById = async (id) => {
         const response = await fetch(`${getScientistURL}${id}`);
         const data = await response.json();
         setScientist(data);
-        console.log("DAta:")
         console.log(data);
         setCurrentUser(data);
     }
@@ -86,10 +88,10 @@ const EditScientist = () => {
         <>
     <div><NavigationBar /></div>
     <MDBJumbotron>
-        <div className='lead display-3 text-center'>View and update client</div>
+        <div className='lead display-3 text-center'>Update scientist</div>
         <br />
-        <MDBCardText className='text-center'>Here you can add and create new article. Please notice that after creation, your article won't be automatically posted.</MDBCardText>
-        <MDBCardText className='text-center'>Administrator needs to review what you've posted and if everything is okay, your article will be publsihed.</MDBCardText>
+        <MDBCardText className='text-center'>Here you can update scientist data.</MDBCardText>
+        <MDBCardText className='text-center'>Please be carefull when working with personal data.</MDBCardText>
     </MDBJumbotron>
     <div className="container-sm border border-dark" key={scientist.id}>
       <br></br>
@@ -210,14 +212,24 @@ const EditScientist = () => {
               <p className="text-sm text-danger">{errors.fieldOfScience.message}</p>
             )} */}
         </div>
-        <div className='footer'>
-            <button type='button' className='btn' onClick={updateScientist}>
+        <div className='footer text-center'>
+            <button type='button' className='btn btn-primary' onClick={() => setModalIsOpen(true)}>
                 Update
             </button>
         </div>  
         <br></br>
       </form>
     </div>
+    <Modal isOpen={modalIsOpen}
+           ariaHideApp={false}
+           onRequestClose={() => setModalIsOpen(false)}
+    >
+        <h2>Title</h2>
+        <p>Body</p>
+        <div>
+            <button onClick={() => setModalIsOpen(false)}>Close</button>
+        </div>
+    </Modal>
     </>
     )
 }

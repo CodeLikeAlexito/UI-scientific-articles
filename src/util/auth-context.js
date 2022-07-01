@@ -5,6 +5,8 @@ let logoutTimer;
 const AuthContext = React.createContext({
   token: '',
   username: '',
+  role: [],
+  admin: '',
   isLoggedIn: false,
   login: (token) => {},
   logout: () => {},
@@ -25,6 +27,8 @@ const retrieveStoredToken = () => {
   const storedToken = localStorage.getItem('token');
   const storedExpirationDate = localStorage.getItem('expirationTime');
   const storedUsername = localStorage.getItem('username');
+  const storedRole = localStorage.getItem('role');
+  const storedIsAdmin = localStorage.getItem('admin');
 
   const remainingTime = calculateRemainingTime(storedExpirationDate);
 
@@ -33,9 +37,20 @@ const retrieveStoredToken = () => {
     localStorage.removeItem('expirationTime');
     return null;
   }
-
+  console.log('retrivesStoredToken');
+  console.log(
+    {
+      token: storedToken,
+      role: storedRole,
+      admin: storedIsAdmin,
+      duration: remainingTime,
+      username: storedUsername,
+    }
+  )
   return {
     token: storedToken,
+    role: storedRole,
+    admin: storedIsAdmin,
     duration: remainingTime,
     username: storedUsername,
   };
@@ -44,18 +59,25 @@ const retrieveStoredToken = () => {
 export const AuthContextProvider = (props) => {
   // console.log("Inside AuthContextProvider begining");
   const tokenData = retrieveStoredToken();
+  console.log("AuthContextProvider");
   console.log(tokenData);
 //   const tokenData = null;
   
   let initialToken;
   let initialUsername;
+  let initialRole;
+  let initialIsAdmin;
   if (tokenData) {
     initialToken = tokenData.token;
     initialUsername = tokenData.username;
+    initialRole = tokenData.role;
+    initialIsAdmin = tokenData.admin;
   }
 
   const [token, setToken] = useState(initialToken);
   const [username, setUsername] = useState(initialUsername);
+  const [role, setRole] = useState(initialRole);
+  const [admin, setIsAdmin] = useState(initialIsAdmin);
 
   const userIsLoggedIn = (!token || token.length === 0 ) ? false : true;
 //   const userIsLoggedIn = !!token;
@@ -65,21 +87,25 @@ export const AuthContextProvider = (props) => {
     localStorage.removeItem('token');
     localStorage.removeItem('expirationTime');
     localStorage.removeItem('username');
+    localStorage.removeItem('role');
+    localStorage.removeItem('admin');
   }
 
-  const loginHandler = (token, expirationTime, username) => {
-    console.log("Inside loginHandler");
+  const loginHandler = (token, expirationTime, username, role, admin) => {
+    // console.log("Inside loginHandler");
     setToken(token);
     localStorage.setItem('token', token);
     localStorage.setItem('expirationTime', expirationTime);
     localStorage.setItem('username', username);
+    localStorage.setItem('role', role);
+    localStorage.setItem('admin', admin);
 
     const remainingTime = calculateRemainingTime(expirationTime);
-    console.log("Remaining time: " + remainingTime);
+    // console.log("Remaining time: " + remainingTime);
     // logoutTimer = setTimeout(logoutHandler, remainingTime);
   };
 
-  console.log(userIsLoggedIn)
+  // console.log(userIsLoggedIn);
 
 //   const logoutHandler = useCallback(() => {
 //     console.log("Inside logoutHandler");
@@ -93,9 +119,11 @@ export const AuthContextProvider = (props) => {
 //   }, []);
 
   useEffect(() => {
-    console.log("Inside useEffect");
+    // console.log("Inside useEffect");
     if (tokenData) {
-      console.log(tokenData.duration);
+      console.log("useEffect");
+      console.log(tokenData);
+      retrieveStoredToken();
     //   logoutTimer = setTimeout(logoutHandler, tokenData.duration);
     }
   }, [tokenData/*, logoutHandler*/]);
@@ -103,6 +131,8 @@ export const AuthContextProvider = (props) => {
   const contextValue = {
     token: token,
     username: username,
+    role: role,
+    admin: admin,
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,

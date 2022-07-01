@@ -37,7 +37,7 @@ const ScientistsComponent = () => {
         (scientist) => {
             return (
                 <tr key={scientist.id}>
-                    <td>{scientist.id}</td>
+                    {/* <td>{scientist.id}</td> */}
                     <td>{scientist.firstName}</td>
                     <td>{scientist.lastName}</td>
                     <td>{scientist.username}</td>
@@ -46,8 +46,8 @@ const ScientistsComponent = () => {
                     <td>{scientist.city}</td>
                     <td>{scientist.phone}</td>
                     <td>{scientist.roles[0].name}</td>
-                    <td scope="col"><button onClick={()=> handleDelete(scientist.id)}>Delete</button></td>
-                    <td scope="col"><button onClick={() => redirectEdit(scientist.id)}>Edit</button></td>
+                    <td scope="col"><button className='btn btn-danger' onClick={()=> handleDelete(scientist.id)}>Delete</button></td>
+                    <td scope="col"><button className='btn btn-warning' onClick={() => redirectEdit(scientist.id)}>Edit</button></td>
                 </tr>
             )
         }
@@ -55,11 +55,12 @@ const ScientistsComponent = () => {
 
     return(
         <div className='container-xxl border'>
-            <h1 className='text-center'>Registered users</h1>
+            <br></br>
+            <h1 className='text-center'>Registered scientists</h1>
             <table className="table">
                 <thead>
                     <tr>
-                    <th scope="col">Id</th>
+                    {/* <th scope="col">Id</th> */}
                     <th scope="col">First name</th>
                     <th scope="col">Last name</th>
                     <th scope="col">Username</th>

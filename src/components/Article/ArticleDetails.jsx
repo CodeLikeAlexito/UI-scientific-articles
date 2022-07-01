@@ -12,10 +12,12 @@ import Base64Downloader from 'common-base64-downloader-react';
 const ArticleDetails = () => {
 
     const URL = "http://localhost:4002/v1/api/article/id/";
+    const citedArticleUrl = "http://localhost:4002/v1/api/article/reference/count/";
 
     const { id } = useParams();
     const [article, setArticle] = useState('');
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
+    const [ countReference, setCountReference ] = useState(0);
 
     const getArticleById = async (id) => {
         const response = await fetch(`${URL}${id}`);
@@ -24,9 +26,19 @@ const ArticleDetails = () => {
         console.log(data);
     }
 
+    const getCountReferenceNumber = async (title) => {
+        const response = await fetch(`${citedArticleUrl}${title}`);
+        const data = await response.json();
+        setCountReference(data);
+    }
+
     useEffect(() => {
         getArticleById(id);
     }, []);
+
+    useEffect(() => {
+        getCountReferenceNumber(article.title);
+    }, [])
 
     // const sharePDF = async () => {
     //     const shareOptions = {
@@ -83,7 +95,7 @@ const ArticleDetails = () => {
                 <div className='row'>
                     <div className='col'>
                         <h5 className='fw-bolder'>KEYWORDS</h5>
-                        {/* <p>{article.keywords.map(keyword => <p>{keyword}</p>)}</p> */}
+                        <p>{article.keywords}</p>
                         
                     </div>
                 </div>
@@ -94,6 +106,7 @@ const ArticleDetails = () => {
                 <br></br>
                 <div className='row'>
                     <h5 className='fw-bolder text-uppercase'>Total number of references</h5>
+                    <p>{countReference}</p>
                 </div>
                 <br></br>
             </div>

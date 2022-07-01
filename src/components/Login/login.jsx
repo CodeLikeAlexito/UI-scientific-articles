@@ -26,21 +26,14 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setFormErrors(validate(formValues));
-    console.log(formErrors);
-    setIsLoading(true);
-    setIsSubmit(true);
-
-    const isValid = Object.keys(formErrors).length === 0;
-    const errorsForm = validate(formValues);
+  const sendRequest = async () => {
 
     const AuthenticationRequest = {
       username: formValues.username,
       password: formValues.password,
     };
 
+    setIsLoading(true);
     const response = await fetch(`${URL}/auth`, {
       headers: {
           "Content-Type": "application/json",
@@ -49,13 +42,14 @@ const Login = () => {
       body: JSON.stringify(AuthenticationRequest),
     });
     const data = await response.json();
+
     if(response.ok) {
       console.log("Inside login response ok");
       console.log(data);
       const expirationTime = new Date(
         new Date().getTime() + +data.expirationTime
       );
-      authCtx.login(data.token, expirationTime.toISOString(), data.username);
+      authCtx.login(data.token, expirationTime.toISOString(), data.username, JSON.stringify(data.role), data.admin);
       navigate("/");
       return data;
     }
@@ -69,6 +63,12 @@ const Login = () => {
     setIsLoading(false);
   }
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setFormErrors(validate(formValues));
+    setIsSubmit(true);
+  }
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormValues({...formValues, [name]: value});
@@ -78,6 +78,7 @@ const Login = () => {
     console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       console.log(formValues);
+      sendRequest();
     }
   }, [formErrors]);
 

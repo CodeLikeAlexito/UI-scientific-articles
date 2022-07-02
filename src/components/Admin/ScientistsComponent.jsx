@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 const ScientistsComponent = () => {
 
-    const URL = 'http://localhost:4001/scientist/';
+    const URL = '/v1/api/scientist/';
     const [scientists, setScientists] = useState([]);
     const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ const ScientistsComponent = () => {
                     <td>{scientist.city}</td>
                     <td>{scientist.phone}</td>
                     <td>{scientist.roles[0].name}</td>
-                    <td scope="col"><button className='btn btn-danger' onClick={()=> handleDelete(scientist.id)}>Delete</button></td>
+                    <td scope="col"><button className='btn btn-danger' onClick={() => handleDelete(scientist.id)}>Delete</button></td>
                     <td scope="col"><button className='btn btn-warning' onClick={() => redirectEdit(scientist.id)}>Edit</button></td>
                 </tr>
             )
@@ -54,6 +54,7 @@ const ScientistsComponent = () => {
     )
 
     return(
+        <>
         <div className='container-xxl border'>
             <br></br>
             <h1 className='text-center'>Registered scientists</h1>
@@ -76,6 +77,7 @@ const ScientistsComponent = () => {
                 </tbody>
             </table>
         </div>
+        </>
     );
 }
 

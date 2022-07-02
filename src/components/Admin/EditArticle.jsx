@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { NavigationBar } from '../NavigationBar';
 import {useNavigate} from "react-router-dom";
 import Base64Downloader from 'common-base64-downloader-react';
+import AuthContext from '../../util/auth-context';
+import { Button, Modal } from 'react-bootstrap';
 import {
     MDBJumbotron,
     MDBCardText
@@ -10,58 +12,61 @@ import {
 
 const EditArticle = () => {
 
-    const getURL = 'http://localhost:4002/v1/api/article/id/';
-    const editURL = 'http://localhost:4002/v1/api/article/';
+    const authCtx = useContext(AuthContext);
+
+    const getURL = '/v1/api/article/id/';
+    const editURL = '/v1/api/article/';
     const navigate = useNavigate();
     const { id } = useParams();
     const [article, setArticle] = useState('');
 
-    const [abstractDescription, setAbstractDescription] = useState('');
-    const [academicJournal, setAcademicJournal] = useState('');
-    const [authors, setAuthors] = useState([]);
-    // const [author, setAuthor] = useState('');
-    const [creator, setCreator] = useState('');
-    const [fieldOfScience, setFieldOfScience] = useState('');
-    const [keywords, setKeywords] = useState([]);
+    const handleShow = () => setShow(true);
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+
+    const initialValues = {
+        title: article.title,
+        yearPublished: article.yearPublished,
+        authors: article.authors,
+        keywords: article.keywords,
+        abstractDescription: article.abstractDescription,
+        academicJournal: article.academicJournal,
+        fieldOfScience: article.fieldOfScience
+      };
+
+      const [formValues, setFormValues] = useState(initialValues);
+      const [formErrors, setFormErrors] = useState({});
+      const[isSubmit, setIsSubmit] = useState(false);
+      const[isLoading, setIsLoading] = useState(false);
+
     const [status, setStatus] = useState('');
-    const [title, setTitle] = useState('');
-    const [yearPublished, setYearPublished] = useState('');
+    const [creator, setCreator] = useState('');
     const [coverPage, setCoverPage] = useState(null);
     const [coverPageError, setCoverPageError] = useState('');
     const [articlePdf, setArticlePdf]=useState(null);
     const [pdfError, setPdfError]=useState('');
-    //articlePdf
-    //coverImage
-    //articleID
 
     const getArticleById = async (id) => {
-        // console.log(`${getURL}${id}`);
-        const response = await fetch(`${getURL}${id}`);
+        const response = await fetch(`${getURL}${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authCtx.token}`,
+            }
+        });
         const data = await response.json();
+        console.log("data");
+        console.log(data);
         setArticle(data);
-        // console.log("DAta:")
-        // console.log(data);
-        setCurrentArticle(data);
+        setFormValues(data);
+        setCoverPage(data.coverPage);
+        setArticlePdf(data.articlePdf);
+        setStatus(data.status);
+        setCreator(data.creator);
     }
 
-    const setCurrentArticle = (data) => {
-        if(data.abstractDescription !== null ) { setAbstractDescription(data.abstractDescription); }
-        if(data.academicJournal !== null ) { setAcademicJournal(data.academicJournal); }
-        if(data.authors !== null) { setAuthors(data.authors); }
-        if(data.creator !== null) { setCreator(data.creator); }
-        if(data.fieldOfScience !== null) { setFieldOfScience(data.fieldOfScience); }
-        if(data.keywords !== null) { setKeywords(data.keywords); }
-        if(data.status !== null) { setStatus(data.status); }
-        if(data.title !== null) { setTitle(data.title); }
-        if(data.yearPublished !== null) { setYearPublished(data.yearPublished); }
-        if(data.coverPage !== null) { setCoverPage(data.coverPage) }
-        if(data.articlePdf !== null) { setArticlePdf(data.articlePdf) }
-        // authors.map(author => setAuthor(author));
-    }
+    // console.log(article);
     
-
     useEffect(() => {
-        console.log("here");
         getArticleById(id);
     }, []);
 
@@ -70,56 +75,105 @@ const EditArticle = () => {
         setStatus(event.target.value);
     }
 
-    // const handleAuthorsState = (event) => {
-    //     let temp_authors = authors;
-    //     console.log(temp_authors);
-    //     console.log(event.target.value)
-    //     const newState = authors.map( (author) => {
-    //         // console.log(index);
-    //         setAuthor(event.target.value);
-    //         return {...authors, author: event.targe.value}
-    //     });
+    const sendRequest = async () => {
 
-    //     console.log(newState);
-    // }
-
-    const updateArticle = async () => {
+        setIsLoading(true);
 
         const ArticleRequestDto = {
-            // articleId: articleId,
-            title: title,
-            yearPublished: yearPublished,
-            authors: authors,
-            keywords: keywords,
+            title: formValues.title,
+            yearPublished: formValues.yearPublished,
+            authors: formValues.authors,
+            keywords: formValues.keywords,
             coverPageImage: coverPage,
             articlePdf: articlePdf,
-            abstractDescription: abstractDescription,
-            academicJournal: academicJournal,
-            fieldOfScience: fieldOfScience,
+            abstractDescription: formValues.abstractDescription,
+            academicJournal: formValues.academicJournal,
+            fieldOfScience: formValues.fieldOfScience,
             status: status,
             creator: creator
           };
 
-        // const updatedArticle = { abstractDescription, academicJournal, authors, creator, fieldOfScience, keywords, status, title,  yearPublished, articlePdf, coverPage};
         console.log(ArticleRequestDto);
-        // console.log(`${editURL}`);
+
         const response = await fetch(`${editURL}${id}`, {
-            method: "PUT",
+            method: 'PUT',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${authCtx.token}`,
             },
             body: JSON.stringify(ArticleRequestDto)
         });
+
         const { updArticle } = await response.json();
+        console.log(updArticle);
+
         if(response.ok) {
-            alert("Succesfully updated article");
             navigate("/admin");
             return updArticle;
         }
+
+        let errorMessage = 'Registration failed!';
+        if(updArticle && updArticle.message){
+            errorMessage = updArticle.message;
+        }
         
-        console.log(response);
-        console.log("Error updating");
+        alert(errorMessage);
+        setIsLoading(false); 
     };
+
+    const handleArticleEdit = (e) => {
+        e.preventDefault();
+        setFormErrors(validate(formValues));
+        setIsSubmit(true);
+        setShow(false);
+    }
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormValues({...formValues, [name]: value});
+    }
+
+    const validate = (values) => {
+        const errors = {};
+        if (!values.title) {
+          errors.title = "Title is required!";
+        }
+    
+        if (!values.yearPublished) {
+          errors.yearPublished = "Year of published is required!";
+        }
+    
+        if (!values.authors) {
+          errors.authors = "Authors is required!";
+        }
+    
+        if (!values.keywords) {
+          errors.keywords = "Keywords is required!";
+        }
+    
+        if (!values.abstractDescription) {
+          errors.abstractDescription = "Abstract description is required!";
+        }
+    
+        if (!values.academicJournal) {
+          errors.academicJournal = "Academic journal is required!";
+        }
+    
+        if (!values.fieldOfScience) {
+          errors.fieldOfScience = "Field of science is required!";
+        }
+    
+        return errors;
+    }
+
+    useEffect(() => {
+        console.log(formErrors);
+        if (Object.keys(formErrors).length === 0 && isSubmit) {
+          console.log(formValues);
+          sendRequest();
+        }
+    }, [formErrors]);
+
 
     const allowedImageFormats = ['image/jpeg', 'image/jpg', 'image/png'];
     const handleImage = (e) => {
@@ -131,7 +185,8 @@ const EditArticle = () => {
             image.onloadend=(e)=>{
                 setCoverPageError('');
                 setCoverPage(e.target.result);
-                // console.log(e.target);
+                const { name, value } = e.target;
+                setFormValues({...formValues, [name]: value});
             }   
         } else {
             setCoverPageError('Not a valid jpg, png or jpeg: Please select only JPG, PNG or JPEG');
@@ -145,7 +200,6 @@ const EditArticle = () => {
     const allowedFiles = ['application/pdf'];
     const handleFile = (e) =>{
     let selectedFile = e.target.files[0];
-    // console.log(selectedFile.type);
     if(selectedFile){
       if(selectedFile&&allowedFiles.includes(selectedFile.type)){
         let reader = new FileReader();
@@ -153,7 +207,6 @@ const EditArticle = () => {
         reader.onloadend=(e)=>{
           setPdfError('');
           setArticlePdf(e.target.result);
-        //   console.log(e.target);
         }
       }
       else{
@@ -178,20 +231,15 @@ const EditArticle = () => {
     <div className="container-sm border border-dark" key={article.articleId}>
       <br></br>
       <form className='form'>
-        <input
-            type="hidden"
-            name="articleId"
-            value={article.articleId}
-        />
         <div className='form-group container'>
             <div className='row'>
                 <div className='col'>
                     <img src={coverPage !== "" ? `${coverPage}` : 'https://via.placeholder.com/400'}  
-                        alt={title}
+                        alt={formValues.title}
                         width="150" height="150"/>
                 </div>
                 <div className='col'>
-                    <Base64Downloader base64={articlePdf} downloadName={title} className='btn text-uppercase fw-bolder'>
+                    <Base64Downloader base64={articlePdf} downloadName={'Article'} className='btn text-uppercase fw-bolder'>
                         Download PDF
                     </Base64Downloader>
                 </div>
@@ -204,7 +252,6 @@ const EditArticle = () => {
                     <div className='form-group'>
                         <label><p>Change cover image</p></label>
                         <input
-                            // {...register("coverPageImage")} 
                             type="file"
                             name="imageFile"
                             className='form-control'
@@ -217,7 +264,6 @@ const EditArticle = () => {
                     <label><p>Change PDF</p></label>
                     <br></br>
                     <input
-                        // {...register("articlePdf")}  
                         type='file'
                         name='pdfFile'
                         className="form-control"
@@ -230,110 +276,74 @@ const EditArticle = () => {
         <div className='form-group'>
             <label>Abstract description</label>
             <input
-                // {...register("username")}
                 type="text"
                 name="abstractDescription"
-                value={abstractDescription}
-                onChange={(e) => setAbstractDescription(e.target.value)}
+                value={formValues.abstractDescription}
+                onChange={handleChange}
                 className="form-control"
             />
-            {/* {errors.yearPublished && (
-              <p className="text-sm text-danger">{errors.yearPublished.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.abstractDescription}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Academic journal</label>
             <input
-                // {...register('firstName')} 
                 type="text"
                 name="academicJournal"
-                value={academicJournal}
-                onChange={(e) => setAcademicJournal(e.target.value)}
+                value={formValues.academicJournal}
+                onChange={handleChange}
                 className="form-control"
             />
-            {/* {errors.authors && (
-              <p className="text-sm text-danger">{errors.authors.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.academicJournal}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Authors</label>
 
             <input
-                // {...register("lastName")}
-                // key={index} 
                 type="text"
                 name="authors"
-                value={authors}
-                onChange={(e) => setAuthors(e.target.value)}
+                value={formValues.authors}
+                onChange={handleChange}
                 className="form-control"
             /> 
-            
-            {/* {authors.map((author) => (
-
-            ))} */}
-
-        </div>
-        <br></br>
-        <div className='form-group'>
-            <label>Creator</label>
-            <input
-                // {...register("email")} 
-                type="text"
-                name="creator"
-                value={creator}
-                onChange={(e) => setCreator(e.target.value)}
-                className="form-control"
-            />
-            {/* {errors.academicJournal && (
-              <p className="text-sm text-danger">{errors.academicJournal.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.authors}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Field of sceince</label>
             <input
-                // {...register("city")} 
                 type="text"
                 name="fieldOfScience"
-                value={fieldOfScience}
-                onChange={(e) => setFieldOfScience(e.target.value)}
+                value={formValues.fieldOfScience}
+                onChange={handleChange}
                 className="form-control"
             />
-            {/* {errors.fieldOfScience && (
-              <p className="text-sm text-danger">{errors.fieldOfScience.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.fieldOfScience}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Keywords</label>
             <input
-                // {...register("address")} 
                 type="text"
                 name="keywords"
-                value={keywords}
-                onChange={(e) => setKeywords(e.target.value)}
+                value={formValues.keywords}
+                onChange={handleChange}
                 className="form-control"
             />
-            {/* {errors.fieldOfScience && (
-              <p className="text-sm text-danger">{errors.fieldOfScience.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.keywords}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Title</label>
             <input
-                // {...register("phone")} 
                 type="text"
                 name="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={formValues.title}
+                onChange={handleChange}
                 className="form-control"
             />
-            {/* {errors.fieldOfScience && (
-              <p className="text-sm text-danger">{errors.fieldOfScience.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.title}</p>
         </div>
         <br></br>
         <div className='form-group'>
@@ -343,33 +353,41 @@ const EditArticle = () => {
                 <option value="PENDING">PENDING</option>
                 <option value="REJECTED">REJECTED</option>
             </select>
-            {/* {errors.fieldOfScience && (
-              <p className="text-sm text-danger">{errors.fieldOfScience.message}</p>
-            )} */}
         </div>
         <br></br>
         <div className='form-group'>
             <label>Year published</label>
             <input
-                // {...register("phone")} 
                 type="text"
                 name="yearPublished"
-                value={yearPublished}
-                onChange={(e) => setYearPublished(e.target.value)}
+                value={formValues.yearPublished}
+                onChange={handleChange}
                 className="form-control"
             />
-            {/* {errors.fieldOfScience && (
-              <p className="text-sm text-danger">{errors.fieldOfScience.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.yearPublished}</p>
         </div>
-        <div className='footer'>
-            <button type='button' className='btn' onClick={updateArticle}>
+        <div className='footer text-center'>
+            <button type='button' className='btn btn-primary' onClick={() => setShow(true)}>
                 Update
             </button>
         </div>  
         <br></br>
       </form>
     </div>
+    <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+            <Modal.Title>Update article data</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure that you want to do this changes?</Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+                Close
+            </Button>
+            <Button variant="primary" onClick={handleArticleEdit}>
+                Save Changes
+            </Button>
+            </Modal.Footer>
+      </Modal>
     </>
     )
 }

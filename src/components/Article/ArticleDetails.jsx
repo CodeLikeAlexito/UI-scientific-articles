@@ -2,17 +2,20 @@ import React from 'react';
 import "./Article.css"
 import { NavigationBar } from '../NavigationBar';
 import { useParams } from 'react-router-dom';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import { Worker } from '@react-pdf-viewer/core';
 import { Viewer } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import Base64Downloader from 'common-base64-downloader-react';
+import AuthContext from '../../util/auth-context';
 // import { FacebookButton, FacebookCount } from "react-social";
 
 const ArticleDetails = () => {
 
-    const URL = "http://localhost:4002/v1/api/article/id/";
-    const citedArticleUrl = "http://localhost:4002/v1/api/article/reference/count/";
+    const authCtx = useContext(AuthContext);
+
+    const URL = "/v1/api/article/id/";
+    const citedArticleUrl = "/v1/api/article/reference/count/";
 
     const { id } = useParams();
     const [article, setArticle] = useState('');
@@ -20,14 +23,24 @@ const ArticleDetails = () => {
     const [ countReference, setCountReference ] = useState(0);
 
     const getArticleById = async (id) => {
-        const response = await fetch(`${URL}${id}`);
+        const response = await fetch(`${URL}${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authCtx.token}`,
+            }
+        });
         const data = await response.json();
         setArticle(data);
         console.log(data);
     }
 
     const getCountReferenceNumber = async (title) => {
-        const response = await fetch(`${citedArticleUrl}${title}`);
+        const response = await fetch(`${citedArticleUrl}${title}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authCtx.token}`,
+            }
+        });
         const data = await response.json();
         setCountReference(data);
     }

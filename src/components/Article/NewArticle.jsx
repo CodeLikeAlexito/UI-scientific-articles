@@ -1,22 +1,10 @@
-import React, {useState, useContext, FC} from 'react'
-
-// Import Worker
-import { Worker } from '@react-pdf-viewer/core';
-// Import the main Viewer component
-import { Viewer } from '@react-pdf-viewer/core';
-// Import the styles
+import React, {useState, useContext, useEffect} from 'react'
 import '@react-pdf-viewer/core/lib/styles/index.css';
-// default layout plugin
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-// Import styles of default layout plugin
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import { NavigationBar } from '../NavigationBar';
 import AuthContext from "../../util/auth-context";
-import { useMutation } from 'react-query';
 import {useNavigate} from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Button, Modal } from 'react-bootstrap';
 
 import {
     MDBJumbotron,
@@ -25,48 +13,40 @@ import {
 
 const NewArticle = () => {
 
-  const validationSchema = z.object({
-    title: z.string({ invalid_type_error: "Please enter article title." }),
-    yearPublished: z.string({ invalid_type_error: "Please enter article year of publish." }),
-    authors: z.string(),
-    coverPageImage: z.instanceof(FileList),
-    articlePdf: z.instanceof(FileList),
-    abstractDescription: z.string(),
-    fieldOfScience: z.string(),
-    creator: z.string(),
-  });
-
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
-    resolver: zodResolver(validationSchema)
-  });
-
+  const API = '/v1/api/article/';  
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
-  // const defaultLayoutPluginInstance = defaultLayoutPlugin();
-  // const[isLoading, setIsLoading] = useState(false);
 
   const [pdfFile, setPdfFile]=useState(null);
   const [pdfError, setPdfError]=useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imageError, setImageError] = useState('');
-  const [articleId, setArticleId] = useState("");
-  const [title, setTitle] = useState("");
-  const [yearPublished, setYearPublished] = useState("");
-  const [authors, setAuthors] = useState([]);
-  const [keywords, setKeywords] = useState([]);
   const [status, setStatus] = useState('');
-//   const [coverPageImage, setCoverPageImage] = useState("");
-//   const [articlePdf, setArticlePdf] = useState("");
-  const [abstractDescription, setAbstractDescription] = useState("");
-  const [academicJournal, setAcademicJournal] = useState("");
-  const [fieldOfScience, setFieldOfScience] = useState("");
   const [creator, setCreator] = useState(authCtx.username);
+
+  const handleShow = () => setShow(true);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+
+  const initialValues = {
+    title: "",
+    yearPublished: "",
+    authors: "",
+    keywords: "",
+    abstractDescription: "",
+    academicJournal: "",
+    fieldOfScience: ""
+  };
+
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
+  const[isSubmit, setIsSubmit] = useState(false);
+  const[isLoading, setIsLoading] = useState(false);
 
   // handle file onChange event
   const allowedFiles = ['application/pdf'];
   const handleFile = (e) =>{
     let selectedFile = e.target.files[0];
-    // console.log(selectedFile.type);
     if(selectedFile){
       if(selectedFile&&allowedFiles.includes(selectedFile.type)){
         let reader = new FileReader();
@@ -74,7 +54,6 @@ const NewArticle = () => {
         reader.onloadend=(e)=>{
           setPdfError('');
           setPdfFile(e.target.result);
-          // console.log(e.target);
         }
       }
       else{
@@ -98,7 +77,6 @@ const NewArticle = () => {
         image.onloadend=(e)=>{
             setImageError('');
             setImageFile(e.target.result);
-            // console.log(e.target);
         }   
       } else {
         setImageError('Not a valid jpg, png or jpeg: Please select only JPG, PNG or JPEG');
@@ -109,67 +87,103 @@ const NewArticle = () => {
     }
   }
 
-  // const handleAuthors = (e) => {
-  //     const authorsString = e.target.value;
-  //     const authorsStringArr = authorsString.trim().split(",");
-  //     setAuthors(authorsStringArr);
-  // }
+  const sendRequest = async () => {
 
-  // I will need to change it to be api gateway
-  const API = 'http://localhost:4002/v1/api/article/';  
-
-  const createArticle = async () => {
+    setIsLoading(true);
 
     const ArticleRequestDto = {
-      // articleId: articleId,
-      title: title,
-      yearPublished: yearPublished,
-      authors: authors,
-      keywords: keywords,
+      title: formValues.title,
+      yearPublished: formValues.yearPublished,
+      authors: formValues.authors,
+      keywords: formValues.keywords,
       coverPageImage: imageFile,
       articlePdf: pdfFile,
-      abstractDescription: abstractDescription,
-      academicJournal: academicJournal,
-      fieldOfScience: fieldOfScience,
+      abstractDescription: formValues.abstractDescription,
+      academicJournal: formValues.academicJournal,
+      fieldOfScience: formValues.fieldOfScience,
       status: status,
       creator: creator
     };
 
     console.log(ArticleRequestDto);
+
     const response = await fetch(API, {
       method: "post",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${authCtx.token}`,
       },
       body: JSON.stringify(ArticleRequestDto)
     });
-    const { article } = await response.json();
-    console.log(article);
-    return article;      
-  }
+    const articleData = await response.json();
 
-  //TODO refactor the returns
-  const { mutate, isLoading } = useMutation(createArticle, {
-    onSuccess: data => {
-      // console.log(data);
-      const message = "success";
-      alert(message);
-      // navigate("/articles");
-    },
-    onError: (data) => {
-      // console.log(data);
-      alert("There was an error");
-      
-    },
-    onSettled: () => {
-      console.log("Here");
+    if(response.ok) {
+      navigate("/");
+      return articleData;
     }
-  });
 
-  const handleCreate = () => {
-    mutate();
+    let errorMessage = 'Registration failed!';
+    if(articleData && articleData.message){
+      errorMessage = articleData.message;
+    }
+
+    alert(errorMessage);
+    setIsLoading(false); 
   }
-  
+
+  const handleArticleCreation = (e) => {
+    e.preventDefault();
+    setFormErrors(validate(formValues));
+    setIsSubmit(true);
+    setShow(false);
+  }
+
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({...formValues, [name]: value});
+  }
+
+  const validate = (values) => {
+    const errors = {};
+    if (!values.title) {
+      errors.title = "Title is required!";
+    }
+
+    if (!values.yearPublished) {
+      errors.yearPublished = "Year of published is required!";
+    }
+
+    if (!values.authors) {
+      errors.authors = "Authors is required!";
+    }
+
+    if (!values.keywords) {
+      errors.keywords = "Keywords is required!";
+    }
+
+    if (!values.abstractDescription) {
+      errors.abstractDescription = "Abstract description is required!";
+    }
+
+    if (!values.academicJournal) {
+      errors.academicJournal = "Academic journal is required!";
+    }
+
+    if (!values.fieldOfScience) {
+      errors.fieldOfScience = "Field of science is required!";
+    }
+
+    return errors;
+  }
+
+  useEffect(() => {
+    console.log(formErrors);
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
+      console.log(formValues);
+      sendRequest();
+    }
+  }, [formErrors]);
 
   return (
       <>
@@ -182,165 +196,137 @@ const NewArticle = () => {
     </MDBJumbotron>
     <div className="container">
 
-      <form className='form' onSubmit={handleSubmit(handleCreate)}>
+      <form className='form'>
         <div className='form-group'>
             <label>Article title</label>
             <input
                 type="text"
-                {...register("title")}
                 name="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={formValues.title}
+                onChange={handleChange}
                 className="form-control"
             />
-            {errors.title && (
-              <p className="text-sm text-danger">{errors.title.message}</p>
-            )}
+            <p className="text-sm text-danger">{formErrors.title}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Year published</label>
             <input
-                {...register("yearPublished")}
                 type="text"
                 name="yearPublished"
-                value={yearPublished}
-                onChange={(e) => setYearPublished(e.target.value)}
+                value={formValues.yearPublished}
+                onChange={handleChange}
                 className="form-control"
             />
-            {errors.yearPublished && (
-              <p className="text-sm text-danger">{errors.yearPublished.message}</p>
-            )}
+            <p className="text-sm text-danger">{formErrors.yearPublished}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Authors</label>
             <p className='text-danger'>Please enter authors separated by ,</p>
             <input
-                {...register('authors')} 
                 type="text"
                 name="authors"
-                value={authors}
-                onChange={(e) => setAuthors(e.target.value)}
+                value={formValues.authors}
+                onChange={handleChange}
                 className="form-control"
             />
-            {errors.authors && (
-              <p className="text-sm text-danger">{errors.authors.message}</p>
-            )}
+            <p className="text-sm text-danger">{formErrors.authors}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Keywords</label>
             <p className='text-danger'>Please enter authors separated by ,</p>
             <input
-                // {...register('authors')} 
                 type="text"
                 name="keywords"
-                value={keywords}
-                onChange={(e) => setKeywords(e.target.value)}
+                value={formValues.keywords}
+                onChange={handleChange}
                 className="form-control"
             />
-            {/* {errors.authors && (
-              <p className="text-sm text-danger">{errors.authors.message}</p>
-            )} */}
+            <p className="text-sm text-danger">{formErrors.keywords}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Abstract description</label>
             <textarea
-                {...register("abstractDescription")} 
                 type="text"
                 name="abstractDescription"
-                value={abstractDescription}
-                onChange={(e) => setAbstractDescription(e.target.value)}
+                value={formValues.abstractDescription}
+                onChange={handleChange}
                 className="form-control"
             />
+            <p className="text-sm text-danger">{formErrors.abstractDescription}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Academic journal</label>
             <input
-                {...register("academicJournal")} 
                 type="text"
                 name="academicJournal"
-                value={academicJournal}
-                onChange={(e) => setAcademicJournal(e.target.value)}
+                value={formValues.academicJournal}
+                onChange={handleChange}
                 className="form-control"
             />
-            {errors.academicJournal && (
-              <p className="text-sm text-danger">{errors.academicJournal.message}</p>
-            )}
+            <p className="text-sm text-danger">{formErrors.academicJournal}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label>Field of science</label>
             <input
-                {...register("fieldOfScience")} 
                 type="text"
                 name="fieldOfScience"
-                value={fieldOfScience}
-                onChange={(e) => setFieldOfScience(e.target.value)}
+                value={formValues.fieldOfScience}
+                onChange={handleChange}
                 className="form-control"
             />
-            {errors.fieldOfScience && (
-              <p className="text-sm text-danger">{errors.fieldOfScience.message}</p>
-            )}
+            <p className="text-sm text-danger">{formErrors.fieldOfScience}</p>
         </div>
         <br></br>
         <div className='form-group'>
             <label><h5>Upload cover image</h5></label>
             <input
-                {...register("coverPageImage")} 
                 type="file"
                 name="imageFile"
                 className='form-control'
                 onChange={handleImage}
             />
             {imageError&&<span className='text-danger'>{imageError}</span>}
-            {errors.coverPageImage && (
-              <p className="text-sm text-danger">{errors.coverPageImage.message}</p>
-            )}
         </div>
         <br></br>
         <div className='form-group'>
             <label><h5>Upload PDF</h5></label>
             <br></br>
             <input
-                  {...register("articlePdf")}  
                   type='file'
                   name='pdfFile'
                   className="form-control"
                   onChange={handleFile}
             />
-            {/* we will display error message in case user select some file
-            other than pdf */}
             {pdfError&&<span className='text-danger'>{pdfError}</span>}
-            {errors.articlePdf && (
-              <p className="text-sm text-danger">{errors.articlePdf.message}</p>
-            )}
-            {/*View PDF */}
-            {/* <div className='container' id="pdfViewer"> */}
-            {/* <label><h5>View PDF</h5></label> */}
-            {/* <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.14.305/build/pdf.worker.min.js"> */}
-                {/* {pdfFile&&<Viewer fileUrl={pdfFile} plugins={[defaultLayoutPluginInstance]}></Viewer>} */}
-            {/* </Worker> */}
-            {/* render this if we have pdfFile state null   */}
-            {/* {!pdfFile&&<h5>No file is selected yet</h5>} */}
-            {/* </div> */}
         </div>
-        <input 
-              type="hidden"
-              name="creator"
-              {...register("creator")}
-              value={creator} 
-              />
         <div className='footer'>
-            <button type='submit' className='btn'>
+            {!isLoading && <button type='button' className='btn' onClick={() => setShow(true)}> 
                 Create
-            </button>
+            </button>}
+            {isLoading && <p>Sending request ....</p>}
         </div>  
       </form>
     </div>
+    <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+            <Modal.Title>Add new article</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure that you want to do add new article?</Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+                Close
+            </Button>
+            <Button variant="primary" onClick={handleArticleCreation}>
+                Save Changes
+            </Button>
+            </Modal.Footer>
+      </Modal>
     </>
   );
 }

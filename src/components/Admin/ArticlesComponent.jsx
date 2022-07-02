@@ -1,17 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {useNavigate} from "react-router-dom";
+import AuthContext from '../../util/auth-context';
 
 const ArticlesComponent = () => {
 
-    const URL = 'http://localhost:4002/v1/api/article/';
+    const URL = '/v1/api/article/';
     const [articles, setArticles] = useState([]);
     const navigate = useNavigate();
+    const authCtx = useContext(AuthContext);
 
     const handleArticles = async () => {
-        const response = await fetch(`${URL}`);
+        const response = await fetch(`${URL}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authCtx.token}`,
+            },
+
+        });
+
+        console.log(response);
+
         const data = await response.json();
         setArticles(data);
-        // console.log(data);
+        console.log(data);
     }
 
     useEffect(() => {
@@ -26,7 +37,8 @@ const ArticlesComponent = () => {
         const response = await fetch(`${URL}${id}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authCtx.token}`,
             },
         });
         const data = await response.json();

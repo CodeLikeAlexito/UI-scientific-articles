@@ -1,13 +1,14 @@
 import React from 'react';
 import {ArticleCard} from './ArticleCard'
 import SearchIcon from './search.svg';
-import {useState, useEffect} from 'react'
-import "./Article.css"
-import {NavigationBar} from '../NavigationBar'
+import {useState, useEffect, useContext} from 'react';
+import "./Article.css";
+import {NavigationBar} from '../NavigationBar';
+import AuthContext from '../../util/auth-context';;
 
 const Articles = () => {
 
-  //TODO check URLS everywhere
+  const authCtx = useContext(AuthContext);
 
   const defaultSelectedDropdownListValue = 'title';
 
@@ -23,15 +24,15 @@ const Articles = () => {
     console.log("Search criteria: " + searchCriteria);
     
     if(searchCriteria === 'title')
-      URL = "http://localhost:4002/v1/api/article/";
+      URL = "/v1/api/article/";
 
     if(searchCriteria === 'keyword'){
 
       if(typeof searchString === 'string' && searchString.trim().length === 0) {
         console.log('Here');
-        URL = "http://localhost:4002/v1/api/article/";
+        URL = "/v1/api/article/";
       } else {
-        URL = "http://localhost:4002/v1/api/article/keyword-search/";
+        URL = "/v1/api/article/keyword-search/";
       }
     }
       
@@ -40,9 +41,9 @@ const Articles = () => {
 
       if(typeof searchString === 'string' && searchString.trim().length === 0) {
         // console.log('Here');
-        URL = "http://localhost:4002/v1/api/article/";
+        URL = "/v1/api/article/";
       } else {
-        URL = "http://localhost:4002/v1/api/article/science/";
+        URL = "/v1/api/article/science/";
       }
 
     }
@@ -50,7 +51,12 @@ const Articles = () => {
 
     console.log(`${URL}${searchString}`);
 
-    const response = await fetch(`${URL}${searchString}`);
+    const response = await fetch(`${URL}${searchString}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${authCtx.token}`,
+      },
+    });
     const data = await response.json();
     setArticles(data);
     console.log(data);  
@@ -81,7 +87,6 @@ const Articles = () => {
       </select>
 
       <div className="search">
-        {/* Todo - add button selection by what criteria to search - title / keywords / fieldOfScience. After that expect for searchTerm passed selected criteria as param in searchArticles */}
         <input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

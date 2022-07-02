@@ -6,16 +6,8 @@ import {NavigationBar} from '../../components/NavigationBar';
 
 const Register = () => {
 
-  const URL = 'http://localhost:4001/scientist/';
+  const URL = '/v1/api/scientist/';
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [city, setCity] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
   const navigate = useNavigate();
   
   const initialValues = {
@@ -36,15 +28,17 @@ const Register = () => {
 
   const sendRequest = async () => {
 
+    setIsLoading(true);
+
     const ClientRegistrationDto = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-      city: city,
-      address: address,
-      phone: phone,
-      username: username
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      password: formValues.password,
+      city: formValues.city,
+      address: formValues.address,
+      phone: formValues.phone,
+      username: formValues.username
     };
 
     const response = await fetch(`${URL}`, {
@@ -56,10 +50,8 @@ const Register = () => {
     });
 
     const data = await response.json();
-    setIsLoading(true); //maybe should be moved some rows upper
 
     if(response.ok) {
-      alert("Successfully registrated");
       navigate("/");
       return data;
     }

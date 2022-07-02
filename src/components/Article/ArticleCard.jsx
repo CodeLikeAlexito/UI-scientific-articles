@@ -1,22 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {useNavigate} from "react-router-dom";
-import {useState} from 'react'
 
 
 const ArticleCard = ({ article }) => {
 
     const navigate = useNavigate();
-    // const [id, setId] = useState();
     const isApproved = article.status === 'APPROVED' ? true : false;
-    // console.log(isApproved);
     
 
     const redirectToArticleInfo = (id) => {
-        // console.log('test');
-        // console.log(article.coverPage);
-        // setId(article.articleId);
-        // console.log(article);
-        
         navigate(`/articles/${id}`);
     }
 
@@ -59,9 +51,7 @@ const ArticleCard = ({ article }) => {
             </div>
 
         </div>
-    
     }
-
       </>
     )
 }

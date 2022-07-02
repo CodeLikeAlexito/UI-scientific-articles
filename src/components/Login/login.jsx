@@ -7,7 +7,7 @@ import AuthContext from "../../util/auth-context";
 
 const Login = () => {
 
-  const URL = 'http://localhost:4001/scientist';
+  const URL = '/v1/api/scientist';
   const authCtx = useContext(AuthContext);
 
   const initialValues = {
@@ -20,23 +20,23 @@ const Login = () => {
   const[isLoading, setIsLoading] = useState(false);
   const[isSubmit, setIsSubmit] = useState(false);
 
-
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
 
   const sendRequest = async () => {
+
+    setIsLoading(true);
 
     const AuthenticationRequest = {
       username: formValues.username,
       password: formValues.password,
     };
 
-    setIsLoading(true);
+    console.log(`${URL}/auth`);
+    
     const response = await fetch(`${URL}/auth`, {
       headers: {
           "Content-Type": "application/json",
+          "Accept": "*/*",
       },
       method: "post",
       body: JSON.stringify(AuthenticationRequest),

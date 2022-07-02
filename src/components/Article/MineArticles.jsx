@@ -9,10 +9,15 @@ const MineArticles = () => {
     const authCtx = useContext(AuthContext);
 
     const [articles, setArticles] = useState([]);
-    const URL = `http://localhost:4002/v1/api/article/username/${authCtx.username}`;
+    const URL = `/v1/api/article/username/${authCtx.username}`;
 
     const fetchArticles = async () => {
-        const response = await fetch(`${URL}`);
+        const response = await fetch(`${URL}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${authCtx.token}`,
+          }
+        });
         const data = await response.json();
         setArticles(data);
     };

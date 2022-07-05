@@ -107,8 +107,6 @@ const NewArticle = () => {
       creator: creator
     };
 
-    console.log(ArticleRequestDto);
-
     const response = await fetch(API, {
       method: "post",
       headers: {
@@ -183,9 +181,7 @@ const NewArticle = () => {
   }
 
   useEffect(() => {
-    console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues);
       sendRequest();
     }
   }, [formErrors]);

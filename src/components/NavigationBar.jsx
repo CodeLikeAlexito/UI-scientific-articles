@@ -26,7 +26,6 @@ const NavigationBar = () => {
 
     useEffect(() => {
         if(localStorage.getItem('admin')){
-            console.log(localStorage.getItem('admin'));
             setAdmin(localStorage.getItem('admin'));
         }
     }, [localStorage.getItem('admin')]);

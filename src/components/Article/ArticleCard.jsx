@@ -1,5 +1,7 @@
 import React from 'react';
 import {useNavigate} from "react-router-dom";
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const ArticleCard = ({ article }) => {
@@ -12,8 +14,18 @@ const ArticleCard = ({ article }) => {
         navigate(`/articles/${id}`);
     }
 
+    const handleInfoMessage = (status) => {
+        toast.warning('Cannot open article for reading. Article is not approved by admin!');
+    }
+
     return (
         <>
+        <ToastContainer 
+        draggable={false}
+        transition={Zoom}
+        autoClose={3000}
+        position={toast.POSITION.TOP_CENTER}
+        />
         {isApproved ?
         <div className="article" key={article.articleId}>
             <div>
@@ -41,6 +53,7 @@ const ArticleCard = ({ article }) => {
             <div>
                 <img src={article.coverPage !== "" ? `${article.coverPage}` : 'https://via.placeholder.com/400'}  
                     alt={article.title}
+                    onClick={() => handleInfoMessage(article.status)}
                 />
             </div>
 

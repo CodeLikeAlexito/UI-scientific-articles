@@ -19,9 +19,6 @@ const Articles = () => {
   const searchArticles = async (searchString, searchCriteria) => {
 
     let URL;
-    console.log('Search string: '+ searchString);
-
-    console.log("Search criteria: " + searchCriteria);
     
     if(searchCriteria === 'title')
       URL = "/v1/api/article/";
@@ -29,7 +26,6 @@ const Articles = () => {
     if(searchCriteria === 'keyword'){
 
       if(typeof searchString === 'string' && searchString.trim().length === 0) {
-        console.log('Here');
         URL = "/v1/api/article/";
       } else {
         URL = "/v1/api/article/keyword-search/";
@@ -40,16 +36,12 @@ const Articles = () => {
     if(searchCriteria === 'fieldOfScience') {
 
       if(typeof searchString === 'string' && searchString.trim().length === 0) {
-        // console.log('Here');
         URL = "/v1/api/article/";
       } else {
         URL = "/v1/api/article/science/";
       }
 
     }
-      
-
-    console.log(`${URL}${searchString}`);
 
     const response = await fetch(`${URL}${searchString}`, {
       method: 'GET',
@@ -58,8 +50,7 @@ const Articles = () => {
       },
     });
     const data = await response.json();
-    setArticles(data);
-    console.log(data);  
+    setArticles(data); 
   }
 
   useEffect(() => {
@@ -67,7 +58,6 @@ const Articles = () => {
   }, []);
 
   const handleSelectDropdownChange = (event) => {
-    console.log(event.target.value);
     setSelectedValue(event.target.value);
   }
 

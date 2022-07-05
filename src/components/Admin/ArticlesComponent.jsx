@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import {useNavigate} from "react-router-dom";
 import AuthContext from '../../util/auth-context';
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const ArticlesComponent = () => {
 
@@ -17,6 +19,7 @@ const ArticlesComponent = () => {
             },
 
         });
+
         const data = await response.json();
         if(response.ok) {
             setArticles(data);
@@ -40,27 +43,38 @@ const ArticlesComponent = () => {
             },
         });
         const data = await response.json();
-        handleArticles();
+        if(response.ok) {
+            toast.success("Successfully deleted article!");
+            setTimeout(() => {
+                handleArticles();
+            }, 1000)
+        }
     }
 
-    // console.log(articles);
     const DisplayData = articles.map(
         (article) => {
             return (
                 <tr key={article.articleId}>
-                    {/* <td>{article.articleId}</td> */}
                     <td>{article.title}</td>
                     <td>{article.yearPublished}</td>
                     <td>{article.authors}</td>
                     <td>{article.keywords}</td>
-                    {/* <td>{article.coverPageImage}</td> */}
-                    {/* <td>{article.articlePdf}</td> */}
                     <td>{article.abstractDescription}</td>
                     <td>{article.academicJournal}</td>
                     <td>{article.fieldOfScience}</td>
                     <td>{article.creator}</td>
                     <td>{article.status}</td>
-                    <td scope="col"><button className='btn btn-danger' onClick={()=> handleDelete(article.articleId)}>Delete</button></td>
+                    <td scope="col">
+                    <ToastContainer 
+                    draggable={false}
+                    transition={Zoom}
+                    autoClose={1000}
+                    position={toast.POSITION.TOP_CENTER}
+                    />
+                        <button className='btn btn-danger' onClick={()=> handleDelete(article.articleId)}>
+                            Delete
+                        </button>
+                        </td>
                     <td scope="col"><button className='btn btn-warning' onClick={() => redirectEdit(article.articleId)}>Edit</button></td>
                 </tr>
             )

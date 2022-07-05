@@ -7,44 +7,31 @@ import AuthContext from "../../util/auth-context";
 const MineArticles = () => {
 
     const authCtx = useContext(AuthContext);
-    const URL = `/v1/api/article/username/${authCtx.username}`;
-    // const [username, setUsername] = useState('');
-    // const [token, setToken] = useState('');
+    const URL = `/v1/api/article/username/`;
 
     const [articles, setArticles] = useState([]);
 
-    // console.log("Username " + username);
-    // console.log("Token " + token);
-    // console.log(`Bearer ${token}`);
-
-    const fetchArticles = async () => {
+    const fetchArticles = async (username) => {
         
-        const response = await fetch(`${URL}`, {
+        const response = await fetch(`${URL}${username}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${authCtx.token}`,
           }
         });
         const data = await response.json();
-        setArticles(data);
+        if(response.ok) {
+          setArticles(data);
+        }
+        
     };
 
-
-    // useEffect(() => {
-    //     if(localStorage.getItem('username')){
-    //         setUsername(localStorage.getItem('username'));
-    //     }
-    // }, [localStorage.getItem('username')]);
-
-    // useEffect(() => {
-    //   if(localStorage.getItem('token')){
-    //       setToken(localStorage.getItem('token'));
-    //   }
-    // }, [localStorage.getItem('token')]);
-
     useEffect(() => {
-        fetchArticles('');
-    }, []);
+        
+        if(localStorage.getItem('username')) {
+          fetchArticles(localStorage.getItem('username'));
+        }
+    }, [localStorage.getItem('username')]);
 
     return (
         <>

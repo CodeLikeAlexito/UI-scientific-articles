@@ -32,8 +32,6 @@ const Login = () => {
       username: formValues.username,
       password: formValues.password,
     };
-
-    console.log(`${URL}/auth`);
     
     const response = await fetch(`${URL}/auth`, {
       headers: {
@@ -46,8 +44,6 @@ const Login = () => {
     const data = await response.json();
 
     if(response.ok) {
-      console.log("Inside login response ok");
-      console.log(data);
       toast.success("Successfully logged in");
       setTimeout(() => {
         const expirationTime = new Date(
@@ -59,8 +55,6 @@ const Login = () => {
       
       return data;
     }
-
-    console.log(data);
 
     let errorMessage = 'Logging failed!';
     if(data && data.message){

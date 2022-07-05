@@ -33,7 +33,7 @@ const HomePage = () => {
 			<div className="col-md-8 offset-md-2 info">
 				<h1 className="text-center">SCIENTIFIC ARTICLES SEARCH</h1>
 				<p className="text-center">
-					Find and work with scientific articles fast and east.
+					Find and work with scientific articles fast and easy.
 				</p>
 				{!isLoggedIn && <a href="/register" className="btn btn-md text-center">GET STARTED</a>}
 				{isLoggedIn && <a href="/articles" className="btn btn-md text-center">FIND ARTICLES</a>}

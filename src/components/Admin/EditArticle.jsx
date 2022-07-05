@@ -56,8 +56,6 @@ const EditArticle = () => {
             }
         });
         const data = await response.json();
-        console.log("data");
-        console.log(data);
         setArticle(data);
         setFormValues(data);
         setCoverPage(data.coverPage);
@@ -65,15 +63,12 @@ const EditArticle = () => {
         setStatus(data.status);
         setCreator(data.creator);
     }
-
-    // console.log(article);
     
     useEffect(() => {
         getArticleById(id);
     }, []);
 
     const handleSelectDropdownChange = (event) => {
-        console.log(event.target.value);
         setStatus(event.target.value);
     }
 
@@ -95,8 +90,6 @@ const EditArticle = () => {
             creator: creator
           };
 
-        console.log(ArticleRequestDto);
-
         const response = await fetch(`${editURL}${id}`, {
             method: 'PUT',
             headers: {
@@ -107,7 +100,6 @@ const EditArticle = () => {
         });
 
         const { updArticle } = await response.json();
-        console.log(updArticle);
 
         if(response.ok) {
             toast.success("Successfully updated article!");
@@ -173,9 +165,7 @@ const EditArticle = () => {
     }
 
     useEffect(() => {
-        console.log(formErrors);
         if (Object.keys(formErrors).length === 0 && isSubmit) {
-          console.log(formValues);
           sendRequest();
         }
     }, [formErrors]);
@@ -199,7 +189,7 @@ const EditArticle = () => {
             setCoverPage('');
         }
         } else {
-        console.log('please select a image');
+            setCoverPageError('Please select an image!');
         }
     }
 
@@ -221,7 +211,7 @@ const EditArticle = () => {
       }
     }
     else{
-      console.log('please select a PDF');
+        setPdfError('Please select a pdf!');
     }
   }
 

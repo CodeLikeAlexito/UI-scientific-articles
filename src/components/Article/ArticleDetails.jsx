@@ -31,7 +31,6 @@ const ArticleDetails = () => {
         });
         const data = await response.json();
         setArticle(data);
-        console.log(data);
     }
 
     const getCountReferenceNumber = async (title) => {
@@ -52,19 +51,6 @@ const ArticleDetails = () => {
     useEffect(() => {
         getCountReferenceNumber(article.title);
     }, [])
-
-    // const sharePDF = async () => {
-    //     const shareOptions = {
-    //       title: 'Share PDF File',
-    //       url: article.articlePdf,
-    //     };
-    
-    //     try {
-    //       const ShareResponse = await Share.open(shareOptions);
-    //     } catch (error) {
-    //       console.log('sharePdfBase64 Error =>', error);
-    //     }
-    //   };
 
     return (
         <>
@@ -128,14 +114,6 @@ const ArticleDetails = () => {
                 <br></br>
                 <div className='row'>
                     <div className='col'>
-                        <h5 className='fw-bolder text-uppercase'>Share paper</h5>
-                        {/* <FacebookButton url={article.articlePdf} appId={707211553718532}>
-                            <FacebookCount url={article.articlePdf} />
-                            {" Share " + article.articlePdf}
-                        </FacebookButton> */}
-                    </div>
-                    <div className='col'>
-                        {/* <h5 className='fw-bolder text-uppercase'>Download PDF</h5> */}
                         <Base64Downloader base64={article.articlePdf} downloadName={article.title} className='btn text-uppercase fw-bolder'>
                             Download PDF
                         </Base64Downloader>

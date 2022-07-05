@@ -44,8 +44,6 @@ const EditScientist = () => {
     const getScientistById = async (id) => {
         const response = await fetch(`${getScientistURL}${id}`);
         const data = await response.json();
-        console.log("data");
-        console.log(data);
         setScientist(data);
         setFormValues(data);
         setRoles(data.roles);
@@ -64,8 +62,6 @@ const EditScientist = () => {
             return obj;
         })
 
-        console.log(newState);
-
         setRoles(newState);
     }
 
@@ -83,9 +79,6 @@ const EditScientist = () => {
             roles: roles
         }
 
-        console.log("scientistdto")
-        console.log(ScientistUpdateDto);
-
         const response = await fetch(`${editScientistURL}${id}`, {
             method: "PUT",
             headers: {
@@ -99,7 +92,6 @@ const EditScientist = () => {
         if(response.ok) {
             toast.success("Successfully updated scientist!");
             setTimeout(() => {
-                console.log("Succesfully updated");
                 navigate("/admin");
             }, 2000)
 
@@ -165,9 +157,7 @@ const EditScientist = () => {
       }
 
     useEffect(() => {
-      console.log(formErrors);
       if (Object.keys(formErrors).length === 0 && isSubmit) {
-        console.log(formValues);
         sendRequest();
       }
     }, [formErrors]);

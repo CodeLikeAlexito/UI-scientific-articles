@@ -159,42 +159,42 @@ const Register = () => {
           <div className="form">
             <div className="form-group">
               <label htmlFor="username">First name</label>
-              <input type="text" name="firstName" placeholder="firstName" value={formValues.firstName} onChange={handleChange}/>
+              <input type="text" name="firstName" placeholder="Enter first name" value={formValues.firstName} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.firstName}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Last name</label>
-              <input type="text" name="lastName" placeholder="lastName" value={formValues.lastName} onChange={handleChange}/>
+              <input type="text" name="lastName" placeholder="Enter last name" value={formValues.lastName} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.lastName}</p>
             </div>
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input type="text" name="email" placeholder="email" value={formValues.email} onChange={handleChange}/>
+              <input type="text" name="email" placeholder="Email address" value={formValues.email} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.email}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Username</label>
-              <input type="text" name="username" placeholder="username" value={formValues.username} onChange={handleChange}/>
+              <input type="text" name="username" placeholder="Enter username" value={formValues.username} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.username}</p>
             </div>
             <div className="form-group">
               <label htmlFor="password">Password</label>
-              <input type="password" name="password" placeholder="password" value={formValues.password} onChange={handleChange}/>
+              <input type="password" name="password" placeholder="Enter password" value={formValues.password} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.password}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">City</label>
-              <input type="text" name="city" placeholder="city" value={formValues.city} onChange={handleChange}/>
+              <input type="text" name="city" placeholder="Enter city" value={formValues.city} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.city}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Address</label>
-              <input type="text" name="address" placeholder="address" value={formValues.address} onChange={handleChange}/>
+              <input type="text" name="address" placeholder="Enter address" value={formValues.address} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.address}</p>
             </div>
             <div className="form-group">
               <label htmlFor="username">Phone</label>
-              <input type="text" name="phone" placeholder="phone" value={formValues.phone} onChange={handleChange}/>
+              <input type="text" name="phone" placeholder="Enter phone number" value={formValues.phone} onChange={handleChange}/>
               <p className="text-sm text-danger">{formErrors.phone}</p>
             </div>
           </div>

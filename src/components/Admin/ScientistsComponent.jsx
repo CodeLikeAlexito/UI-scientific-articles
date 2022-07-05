@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {useNavigate} from "react-router-dom";
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const ScientistsComponent = () => {
 
@@ -31,14 +33,18 @@ const ScientistsComponent = () => {
             },
         });
         const data = await response.json();
-        handleScientists();
+        if(response.ok) {
+            toast.success("Successfully deleted scientist!");
+            setTimeout(() => {
+                handleScientists();
+            }, 1000)
+        }
     }
 
     const DisplayData = scientists.map(
         (scientist) => {
             return (
                 <tr key={scientist.id}>
-                    {/* <td>{scientist.id}</td> */}
                     <td>{scientist.firstName}</td>
                     <td>{scientist.lastName}</td>
                     <td>{scientist.username}</td>
@@ -47,7 +53,17 @@ const ScientistsComponent = () => {
                     <td>{scientist.city}</td>
                     <td>{scientist.phone}</td>
                     <td>{scientist.roles[0].name}</td>
-                    <td scope="col"><button className='btn btn-danger' onClick={() => handleDelete(scientist.id)}>Delete</button></td>
+                    <td scope="col">
+                    <ToastContainer 
+                    draggable={false}
+                    transition={Zoom}
+                    autoClose={1000}
+                    position={toast.POSITION.TOP_CENTER}
+                    />
+                        <button className='btn btn-danger' onClick={() => handleDelete(scientist.id)}>
+                            Delete
+                        </button>
+                    </td>
                     <td scope="col"><button className='btn btn-warning' onClick={() => redirectEdit(scientist.id)}>Edit</button></td>
                 </tr>
             )

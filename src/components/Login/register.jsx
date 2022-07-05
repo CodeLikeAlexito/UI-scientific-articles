@@ -3,6 +3,8 @@ import loginImg from "../../login.svg";
 import { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import {NavigationBar} from '../../components/NavigationBar';
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
 
@@ -51,8 +53,13 @@ const Register = () => {
 
     const data = await response.json();
 
+    toast.success("Successfully registered!")
+
     if(response.ok) {
-      navigate("/");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000)
+      
       return data;
     }
 
@@ -61,7 +68,7 @@ const Register = () => {
       errorMessage = data.message;
     }
 
-    alert(errorMessage);
+    toast.error(errorMessage);
     setIsLoading(false); //check this also
 
   }
@@ -134,14 +141,16 @@ const Register = () => {
     <>
     <div><NavigationBar /></div>
     <br></br>
-    {Object.keys(formErrors).length === 0 && isSubmit ? (
-        <div className="ui message success">Signed in successfully</div>
-      ) : (
-        <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
-      )}
     <form>
     <div className="base-container">
         <div className="header">Register</div>
+        <ToastContainer 
+          draggable={false}
+          transition={Zoom}
+          autoClose={2000}
+          position={toast.POSITION.TOP_CENTER}
+        />
+        <span>Already have an account? <a href="/login">Sign in here</a></span>
         <br></br>
         <div className="content">
           <div className="image">

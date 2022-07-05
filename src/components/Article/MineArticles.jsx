@@ -7,11 +7,18 @@ import AuthContext from "../../util/auth-context";
 const MineArticles = () => {
 
     const authCtx = useContext(AuthContext);
+    const URL = `/v1/api/article/username/${authCtx.username}`;
+    // const [username, setUsername] = useState('');
+    // const [token, setToken] = useState('');
 
     const [articles, setArticles] = useState([]);
-    const URL = `/v1/api/article/username/${authCtx.username}`;
+
+    // console.log("Username " + username);
+    // console.log("Token " + token);
+    // console.log(`Bearer ${token}`);
 
     const fetchArticles = async () => {
+        
         const response = await fetch(`${URL}`, {
           method: 'GET',
           headers: {
@@ -22,14 +29,28 @@ const MineArticles = () => {
         setArticles(data);
     };
 
+
+    // useEffect(() => {
+    //     if(localStorage.getItem('username')){
+    //         setUsername(localStorage.getItem('username'));
+    //     }
+    // }, [localStorage.getItem('username')]);
+
+    // useEffect(() => {
+    //   if(localStorage.getItem('token')){
+    //       setToken(localStorage.getItem('token'));
+    //   }
+    // }, [localStorage.getItem('token')]);
+
     useEffect(() => {
         fetchArticles('');
-      }, []);
+    }, []);
 
     return (
         <>
         <div><NavigationBar /></div>
         <br></br>
+        <div className='container'><h2>Articles published by me</h2></div>
         {articles?.length > 0 ? (
             <div className="container">
               {articles.map((article) => (
@@ -37,9 +58,16 @@ const MineArticles = () => {
                 ))}
             </div>
           ) : (
+            <>
             <div className="empty">
-              <h2>No articles to be fetched</h2>
+              <h2>User {authCtx.username} still hasn't posted an article yet.</h2>
             </div>
+            <br></br>
+            <div className='container-sm text-center'>
+                <h3>Publish your first article now!</h3>
+                <a href="/new-article" className="btn btn-info text-center">PUBLISH ARTICLE</a>  
+              </div>
+            </>
           )}
         </>
     );

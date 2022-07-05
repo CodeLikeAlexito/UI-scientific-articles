@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { NavigationBar } from '../NavigationBar';
 import {useNavigate} from "react-router-dom";
 import { Button, Modal } from 'react-bootstrap';
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
     MDBJumbotron,
@@ -95,17 +97,21 @@ const EditScientist = () => {
         const { updScientist } = await response.json();
 
         if(response.ok) {
-            console.log("Succesfully updated");
-            navigate("/admin");
+            toast.success("Successfully updated scientist!");
+            setTimeout(() => {
+                console.log("Succesfully updated");
+                navigate("/admin");
+            }, 2000)
+
             return updScientist;
         }
         
-        let errorMessage = 'Update scientist failed!';
+        let errorMessage = 'Error while Update scientist!';
         if(updScientist && updScientist.message){
             errorMessage = updScientist.message;
         }
 
-        alert(errorMessage);
+        toast.error(errorMessage);
         setIsLoading(false); //check this also
         };
 
@@ -171,6 +177,12 @@ const EditScientist = () => {
     <div><NavigationBar /></div>
     <MDBJumbotron>
         <div className='lead display-3 text-center'>Update scientist</div>
+        <ToastContainer 
+          draggable={false}
+          transition={Zoom}
+          autoClose={2000}
+          position={toast.POSITION.TOP_CENTER}
+        />
         <br />
         <MDBCardText className='text-center'>Here you can update scientist data.</MDBCardText>
         <MDBCardText className='text-center'>Please be carefull when working with personal data.</MDBCardText>

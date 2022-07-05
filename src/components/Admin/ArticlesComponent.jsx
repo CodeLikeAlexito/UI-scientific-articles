@@ -17,12 +17,10 @@ const ArticlesComponent = () => {
             },
 
         });
-
-        console.log(response);
-
         const data = await response.json();
-        setArticles(data);
-        console.log(data);
+        if(response.ok) {
+            setArticles(data);
+        }
     }
 
     useEffect(() => {

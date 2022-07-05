@@ -5,6 +5,8 @@ import {useNavigate} from "react-router-dom";
 import Base64Downloader from 'common-base64-downloader-react';
 import AuthContext from '../../util/auth-context';
 import { Button, Modal } from 'react-bootstrap';
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import {
     MDBJumbotron,
     MDBCardText
@@ -108,16 +110,20 @@ const EditArticle = () => {
         console.log(updArticle);
 
         if(response.ok) {
-            navigate("/admin");
+            toast.success("Successfully updated article!");
+            setTimeout(() => {
+                navigate("/admin");
+            }, 2000)
+            
             return updArticle;
         }
 
-        let errorMessage = 'Registration failed!';
+        let errorMessage = 'Error while updateing article!';
         if(updArticle && updArticle.message){
             errorMessage = updArticle.message;
         }
         
-        alert(errorMessage);
+        toast.error(errorMessage);
         setIsLoading(false); 
     };
 
@@ -223,7 +229,13 @@ const EditArticle = () => {
         <>
     <div><NavigationBar /></div>
     <MDBJumbotron>
-        <div className='lead display-3 text-center'>View and update client</div>
+        <div className='lead display-3 text-center'>View and update article</div>
+        <ToastContainer 
+          draggable={false}
+          transition={Zoom}
+          autoClose={2000}
+          position={toast.POSITION.TOP_CENTER}
+        />
         <br />
         <MDBCardText className='text-center'>Here you can add and create new article. Please notice that after creation, your article won't be automatically posted.</MDBCardText>
         <MDBCardText className='text-center'>Administrator needs to review what you've posted and if everything is okay, your article will be publsihed.</MDBCardText>

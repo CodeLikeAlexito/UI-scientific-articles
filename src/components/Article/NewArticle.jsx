@@ -5,6 +5,8 @@ import { NavigationBar } from '../NavigationBar';
 import AuthContext from "../../util/auth-context";
 import {useNavigate} from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
     MDBJumbotron,
@@ -118,16 +120,19 @@ const NewArticle = () => {
     const articleData = await response.json();
 
     if(response.ok) {
-      navigate("/");
+      toast.success("Successfully created new article!");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000)
       return articleData;
     }
 
-    let errorMessage = 'Registration failed!';
+    let errorMessage = 'Error while creating new article!';
     if(articleData && articleData.message){
       errorMessage = articleData.message;
     }
 
-    alert(errorMessage);
+    toast.error(errorMessage);
     setIsLoading(false); 
   }
 
@@ -190,6 +195,12 @@ const NewArticle = () => {
     <div><NavigationBar /></div>
     <MDBJumbotron>
         <div className='lead display-3 text-center'>Create new article</div>
+          <ToastContainer 
+          draggable={false}
+          transition={Zoom}
+          autoClose={2000}
+          position={toast.POSITION.TOP_CENTER}
+        />
         <br />
         <MDBCardText className='text-center'>Here you can add and create new article. Please notice that after creation, your article won't be automatically posted.</MDBCardText>
         <MDBCardText className='text-center'>Administrator needs to review what you've posted and if everything is okay, your article will be publsihed.</MDBCardText>

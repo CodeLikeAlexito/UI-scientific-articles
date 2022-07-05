@@ -14,8 +14,9 @@ const ScientistsComponent = () => {
     const handleScientists = async () => {
         const response = await fetch(`${URL}`);
         const data = await response.json();
-        setScientists(data);
-        console.log(data);
+        if(response.ok) {
+            setScientists(data);
+        }
     }
 
     const redirectEdit = (id) => {

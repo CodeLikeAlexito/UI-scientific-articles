@@ -4,6 +4,8 @@ import { useState, useEffect, useContext } from 'react';
 import {useNavigate} from "react-router-dom"
 import {NavigationBar} from "../NavigationBar";
 import AuthContext from "../../util/auth-context";
+import { ToastContainer, toast, Zoom, Bounce } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
 
@@ -46,19 +48,26 @@ const Login = () => {
     if(response.ok) {
       console.log("Inside login response ok");
       console.log(data);
-      const expirationTime = new Date(
-        new Date().getTime() + +data.expirationTime
-      );
-      authCtx.login(data.token, expirationTime.toISOString(), data.username, JSON.stringify(data.role), data.admin);
-      navigate("/");
+      toast.success("Successfully logged in");
+      setTimeout(() => {
+        const expirationTime = new Date(
+          new Date().getTime() + +data.expirationTime
+        );
+        authCtx.login(data.token, expirationTime.toISOString(), data.username, JSON.stringify(data.role), data.admin);
+        navigate("/");
+      }, 3000);
+      
       return data;
     }
+
+    console.log(data);
 
     let errorMessage = 'Logging failed!';
     if(data && data.message){
       errorMessage = data.message;
     }
-    alert(errorMessage);
+    console.log(errorMessage);
+    toast.error(errorMessage);
 
     setIsLoading(false);
   }
@@ -109,7 +118,14 @@ const Login = () => {
       )} */}
       <form>
       <div className="base-container">
+        <ToastContainer 
+          draggable={false}
+          transition={Zoom}
+          autoClose={2000}
+          position={toast.POSITION.TOP_CENTER}
+        />
        <div className="header">Login</div>
+       <span>Don't have an account? <a href="/register">Register here</a></span>
        <br></br>
        <div className="content">
          <div className="image">

@@ -24,6 +24,7 @@
     "patch-package": "^6.4.7",
     "pdfjs-dist": "^2.14.305",
     "prop-types": "^15.8.1",
+    "query-string": "^7.1.1",
     "ra-data-json-server": "^4.2.0",
     "ra-data-simple-rest": "^4.2.0",
     "ra-data-springboot-rest": "^1.0.1",

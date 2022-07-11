@@ -21,6 +21,8 @@ import 'mdbreact/dist/css/mdb.css';
 import './index.css';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ForgetPassword } from './components/Login/ForgetPassword';
+import { ResetPassword } from './components/Login/ResetPassword';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const queryClient = new QueryClient();
@@ -39,7 +41,8 @@ root.render(
       <Route path='/new-article' element={<NewArticle />}/>
       <Route path='/admin' element={<AdminPage />}/>
       <Route path='/mine-articles' element={<MineArticles />}/>
-      {/* <Route path='/client/' element={<ScientistsList />}/> */}
+      <Route path='/forget-password' element={<ForgetPassword />}/>
+      <Route path='/reset-password' element={<ResetPassword />}/>
     </Routes>
   </Router>
   </AuthContextProvider>

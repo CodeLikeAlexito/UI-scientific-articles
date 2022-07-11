@@ -139,6 +139,7 @@ const Login = () => {
            </div>
          </div>
        </div>
+       <span>Forget your password? <a href="/reset-password">Reset here</a></span>
        <div className="footer">
          {!isLoading && <button type="button" className="btn" onClick={handleLogin}>
            Login

@@ -53,9 +53,10 @@ const Register = () => {
 
     const data = await response.json();
 
-    toast.success("Successfully registered!")
+    
 
     if(response.ok) {
+      toast.success("Successfully registered!");
       setTimeout(() => {
         navigate("/login");
       }, 2000)

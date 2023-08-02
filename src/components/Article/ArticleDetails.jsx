@@ -20,37 +20,76 @@ const ArticleDetails = () => {
     const { id } = useParams();
     const [article, setArticle] = useState('');
     const defaultLayoutPluginInstance = defaultLayoutPlugin();
-    const [ countReference, setCountReference ] = useState(0);
+    const [ countReference, setCountReference ] = useState();
+    const [title, setTitle] = useState('');
+    const [articleFetched, setArtticleFetched] = useState(false);
+
+    // const getArticleById = async (id) => {
+    //     const response = await fetch(`${URL}${id}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${authCtx.token}`,
+    //         }
+    //     });
+    //     const data = await response.json();
+    //     setArticle(data);
+    // }
+
+    // const getCountReferenceNumber = async (title) => {
+    //     const response = await fetch(`${citedArticleUrl}${title}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${authCtx.token}`,
+    //         }
+    //     });
+    //     const data = await response.json();
+    //     setCountReference(data);
+    // }
 
     const getArticleById = async (id) => {
-        const response = await fetch(`${URL}${id}`, {
+        const articlesResponse = await fetch(`${URL}${id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${authCtx.token}`,
             }
         });
-        const data = await response.json();
-        setArticle(data);
+        const articleData = await articlesResponse.json();
+        setArticle(articleData);
+
+        // console.log("title "+ article.title);
+        // console.log("title1 " + title);
+
+        setArtticleFetched(true);
     }
 
-    const getCountReferenceNumber = async (title) => {
-        const response = await fetch(`${citedArticleUrl}${title}`, {
+    const getCountArticleReferences = async (title) => {
+        const countReferencesResponse = await fetch(`${citedArticleUrl}${article.title}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${authCtx.token}`,
             }
         });
-        const data = await response.json();
-        setCountReference(data);
+        const countReferences = await countReferencesResponse.json();
+        setCountReference(countReferences);
     }
 
     useEffect(() => {
         getArticleById(id);
     }, []);
 
+
+
     useEffect(() => {
-        getCountReferenceNumber(article.title);
+        if(articleFetched) {
+            getCountArticleReferences(article.title);
+        } else {
+            setCountReference(0);
+        }
     }, [])
+
+    // useEffect(() => {
+    //     getCountReferenceNumber(article.title);
+    // }, [])
 
     return (
         <>
@@ -105,7 +144,8 @@ const ArticleDetails = () => {
                 <br></br>
                 <div className='row'>
                     <h5 className='fw-bolder text-uppercase'>Total number of references</h5>
-                    <p>{countReference}</p>
+                    {/* <p>{countReference !== 'undefined' ? JSON.parse(countReference['count']) : 0}</p> */}
+                    <p>{JSON.stringify(countReference)}</p>
                 </div>
                 <br></br>
             </div>

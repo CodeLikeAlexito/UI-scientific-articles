@@ -24,7 +24,7 @@ const NewArticle = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imageError, setImageError] = useState('');
   const [status, setStatus] = useState('');
-  const [creator, setCreator] = useState(authCtx.username);
+  const [creator, setCreator] = useState('');
 
   const handleShow = () => setShow(true);
   const [show, setShow] = useState(false);
@@ -44,6 +44,12 @@ const NewArticle = () => {
   const [formErrors, setFormErrors] = useState({});
   const[isSubmit, setIsSubmit] = useState(false);
   const[isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if(localStorage.getItem('username')){
+        setCreator(localStorage.getItem('username'));
+    }
+  }, [localStorage.getItem('username')]);
 
   // handle file onChange event
   const allowedFiles = ['application/pdf'];

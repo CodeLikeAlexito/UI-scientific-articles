@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: articles-ui
-          image: articles-ui:v4
+          image: articles-ui:v11
 ---
 apiVersion: v1
 kind: Service
